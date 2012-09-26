@@ -19,10 +19,6 @@ metadata = MetaData(engine)
 from setup import quotes
 
 class MessageLogger:
-    """
-    An independent logger class (because separation of application
-    and protocol logic is a good thing).
-    """
     def __init__(self, file):
         self.file = file
 
@@ -36,7 +32,7 @@ class MessageLogger:
         self.file.close()
 
 
-class LogBot(irc.IRCClient):
+class HoggyBot(irc.IRCClient):
     """A logging IRC bot."""
 
     nickname = "hoggy"
@@ -200,8 +196,8 @@ class LogBot(irc.IRCClient):
 
 
 
-class LogBotFactory(protocol.ClientFactory):
-    """A factory for LogBots.
+class HoggyBotFactory(protocol.ClientFactory):
+    """A factory for HoggyBots.
 
     A new protocol instance will be created each time we connect to the server.
     """
@@ -211,7 +207,7 @@ class LogBotFactory(protocol.ClientFactory):
         self.filename = filename
 
     def buildProtocol(self, addr):
-        p = LogBot()
+        p = HoggyBot()
         p.factory = self
         return p
 
@@ -235,5 +231,4 @@ if __name__ == '__main__':
     reactor.connectTCP("irc.freenode.net", 6667, f)
 
     # run bot
-    print 'running reactor'
     reactor.run()
