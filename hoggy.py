@@ -2,6 +2,8 @@ from twisted.words.protocols import irc
 from twisted.internet import reactor, protocol
 from twisted.python import log
 import re
+from sqlalchemy import *
+
 
 import time, sys, random
 import os
@@ -62,102 +64,9 @@ class HoggyBot(irc.IRCClient):
             self.msg(user, msg)
             return
 
-        # Otherwise check to see if it is a message directed at me
-        if 'r/' in msg:
-            obj = re.search('r/[^\s\n]*',msg)
-            sub = obj.group()
-            if sub.startswith('/'):
-                sub = sub[1:]
-            message = "http://reddit.com/%s" % sub
-
-        if 'u/' in msg:
-            obj = re.search('u/[^\s\n]*',msg)
-            sub = obj.group()
-            if sub.startswith('/'):
-                sub = sub[1:]
-            message = "http://reddit.com/%s" % sub
-
-        message = commander.recv(msg)
+        message = self.commander.recv(msg, user)
         if message:
             self.msg(channel, message)
-
-        """if msg.startswith('!'):
-            command = msg.split(' ')
-            action = command[0]
-
-            if action == '!test':
-                message = "I'm awake! Stop poking me!"
-            elif action == '!blame':
-                try:
-                    target = command[1]
-                except:
-                    message = '!blame requires a target'
-                    self.msg(channel, message)
-                    return
-                message = "Well done, %s, you've done gone and Hoozin'ed it now." % target
-            elif action == '!quit' or action == '!crash':
-                message = 'Never'
-
-            elif action == '!help':
-                message = '!test\n!blame [target]\n!hoggy: Display a random Hoggyism\n!hoggy add [quote]: preserve a quote for all eternity\n!hoggy delete [id]\n!rifle [target](optional)\n!pickle [target]\n!guns'
-
-            elif action == '!pickle':
-                try:
-                    target = command[1]
-                except:
-                    message = '!pickle requires a target'
-                    self.msg(channel, message)
-                    return
-                message = '%s dropped a high angle CCIP Mk. 82 toward %s' % (user, target)
-                self.msg(channel, message)
-                if random.randint(0,100) > 33:
-                    message = '%s obliterated %s with a well aimed drop.' % (user, target)
-                else:
-                    message = '%s missed, read the 9-line, noob!' % user
-
-            elif action == '!guns':
-                message = 'BBBBBBRRRRRRRAAAAAAAAAPPPPPPP!!!!!'
-
-            elif action == '!rifle':
-                message = ''
-                try:
-                    target = command[1]
-                    message = '%s slews over to the burning hot flesh-sack that is %s with an AGM-65 seeker....\n' % (user, target)
-                    message += '(M) BBBBEEEEEEPPPPPP!  EVERYONE FLIP THE FUCK OUT\n'
-                    if random.randint(0,100) > 33:
-                        message += '%s obliterated %s with a well aimed Maverick.' % (user, target)
-                    else:
-                        message += '%s missed, read the 9-line, noob!' % user
-                except:
-                    message = '(M) BBBBEEEEEEPPPPPP!  EVERYONE FLIP THE FUCK OUT'
-
-            if action == '!hoggy':
-                try:
-                    original = command
-                    command = command[1]
-                except:
-                    message = self.get_random()
-                    self.msg(channel, message)
-                    return
-
-                if command == 'add':
-                    print 'adding: ' + " ".join(original[2:])
-                    self.add_quote(" ".join(original[2:]))
-                    message = "Added: " + " ".join(original[2:])
-
-                if command == 'delete':
-                    try:
-                        print original[2]
-                        self.remove_quote(original[2])
-                        message = "Removed Hoggyism " + original[2]
-                    except Exception, ex:
-                        print ex
-                        message = 'delete requires quote id'
-                        self.msg(channel, message)
-
-        if message != False:
-            self.msg(channel, message)
-            self.logger.log("<%s> %s" % (self.nickname, msg))"""
 
     def action(self, user, channel, msg):
         """This will get called when the bot sees someone do an action."""
