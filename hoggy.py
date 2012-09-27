@@ -1,22 +1,16 @@
-# twisted imports
 from twisted.words.protocols import irc
 from twisted.internet import reactor, protocol
 from twisted.python import log
 import re
-from sqlalchemy import *
-from  sqlalchemy.sql.expression import func
 
-# system imports
 import time, sys, random
 import os
 
+import actions
+
 HERE =  os.path.dirname(os.path.abspath(__file__))
-
 engine = create_engine('sqlite:///%s.sqlite' % HERE)
-
 metadata = MetaData(engine)
-
-from setup import quotes
 
 class MessageLogger:
     def __init__(self, file):
@@ -34,23 +28,10 @@ class MessageLogger:
 
 class HoggyBot(irc.IRCClient):
     """A logging IRC bot."""
-
     nickname = "hoggy"
+    commander = actions.Commander()
 
-    def add_quote(self, message):
-        q = quotes.insert()
-        q.execute(body=message)
-
-    def get_random(self):
-        q =  quotes.select(limit=1).order_by('RANDOM()')
-        rs = q.execute()
-        row = rs.fetchone()
-        return str(row['id']) +': ' + str(row['body'])
-
-    def remove_quote(self, id):
-        q = quotes.delete().where("id=" + str(id))
-        rs = q.execute()
-
+    # callbacks for events
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
         self.logger = MessageLogger(open(self.factory.filename, "a"))
@@ -63,9 +44,6 @@ class HoggyBot(irc.IRCClient):
                         time.asctime(time.localtime(time.time())))
         self.logger.close()
 
-
-    # callbacks for events
-
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
         self.join(self.factory.channel)
@@ -77,7 +55,6 @@ class HoggyBot(irc.IRCClient):
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
         user = user.split('!', 1)[0]
-        message = False
 
         # Check to see if they're sending me a private message
         if channel == self.nickname:
@@ -93,7 +70,18 @@ class HoggyBot(irc.IRCClient):
                 sub = sub[1:]
             message = "http://reddit.com/%s" % sub
 
-        if msg.startswith('!'):
+        if 'u/' in msg:
+            obj = re.search('u/[^\s\n]*',msg)
+            sub = obj.group()
+            if sub.startswith('/'):
+                sub = sub[1:]
+            message = "http://reddit.com/%s" % sub
+
+        message = commander.recv(msg)
+        if message:
+            self.msg(channel, message)
+
+        """if msg.startswith('!'):
             command = msg.split(' ')
             action = command[0]
 
@@ -169,7 +157,7 @@ class HoggyBot(irc.IRCClient):
 
         if message != False:
             self.msg(channel, message)
-            self.logger.log("<%s> %s" % (self.nickname, msg))
+            self.logger.log("<%s> %s" % (self.nickname, msg))"""
 
     def action(self, user, channel, msg):
         """This will get called when the bot sees someone do an action."""
@@ -225,7 +213,7 @@ if __name__ == '__main__':
     log.startLogging(sys.stdout)
 
     # create factory protocol and application
-    f = LogBotFactory(sys.argv[1], sys.argv[2])
+    f = HoggyBotFactory(sys.argv[1], sys.argv[2])
 
     # connect factory to this host and port
     reactor.connectTCP("irc.freenode.net", 6667, f)
