@@ -64,14 +64,20 @@ class hoggy(command):
             hog.remove_quote(id)
             return "Deleted #%d" % id
 
+class eject(command):
+    @classmethod
+    def execute(cls, user, client):
+        client.kick('hoggit', user, 'Ejecting!')
+        return "EJECT! EJECT! EJECT! " + user + " punched out."
+
 class guns(command):
     @classmethod
-    def execute(cls, user):
+    def execute(cls, user, client=None):
         return 'BBBRRRRRRRAAAAPPPPPPPPPP!!!!'
 
 class rifle(command):
     @classmethod
-    def execute(cls, target = None, user = None):
+    def execute(cls, target = None, user = None, client=None):
         if target is None:
             return '(M) BBBBEEEEEEPPPPPP!  EVERYONE FLIP THE FUCK OUT'
         try:
@@ -89,7 +95,7 @@ class rifle(command):
 
 class pickle(command):
     @classmethod
-    def execute(cls, target = None, user = None):
+    def execute(cls, target = None, user = None, client = None):
         if target is None:
             messages = [
                 'dropped his bombs without looking, and demolished an elementary school.  The horror is etched into the minds of generations to come.',
@@ -113,8 +119,12 @@ class Commander(object):
         '!hoggy':hoggy,
         '!guns' : guns,
         '!rifle': rifle,
-        '!pickle': pickle
+        '!pickle': pickle,
+	'!eject':eject
     }
+
+    def __init__(self, client):
+        self.client = client
 
     def recv(self, message, user):
         if message.startswith('!'):
@@ -139,20 +149,20 @@ class Commander(object):
                 except:
                     raise ActionException('Invalid command: ' + command)
 
-                return action.execute(*args, user=user)
+                return action.execute(*args, user=user, client=self.client)
             except ActionException, ex:
                 return str(ex)
             except Exception, ex:
                 return "Hoozin'ed it up: unexpected exception: " + str(ex)
         else:
-            if 'r/' in message:
+            if  message.startswith('r/') or ' r/' in message:
                 obj = re.search('r/[^\s\n]*',message)
                 sub = obj.group()
                 if sub.startswith('/'):
                     sub = sub[1:]
                 return "http://reddit.com/%s" % sub
 
-            if 'u/' in message:
+            if  message.startswith('u/') or ' u/' in message:
                 obj = re.search('u/[^\s\n]*',message)
                 sub = obj.group()
                 if sub.startswith('/'):

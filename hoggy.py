@@ -31,7 +31,9 @@ class MessageLogger:
 class HoggyBot(irc.IRCClient):
     """A logging IRC bot."""
     nickname = "hoggy"
-    commander = actions.Commander()
+
+    def __init__(self, *args, **kwargs):
+        self.commander = actions.Commander(self)
 
     # callbacks for events
     def connectionMade(self):
