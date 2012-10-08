@@ -8,10 +8,16 @@ class ActionException(Exception):
         super(ActionException, self).__init__(message)
 
 class command(object):
+    shortdesc = "No help available"
+    longdesc = "No help available, try !eject"
+
     def execute(self, *args):
         raise NotImplementedError
 
 class hoggy(command):
+    longdesc = "with no arguments will display a random quote.  [add <quote>] will add the specified <quote> to the db. [#] Will display the quote with the specified ID"
+    shortdesc = "Display or add Hoggyisms"
+
     # Hoggyism operations
     def add_quote(self, message):
         q = quotes.insert()
@@ -65,17 +71,26 @@ class hoggy(command):
             return "Deleted #%d" % id
 
 class eject(command):
+    shortdesc = "Get the hell out of Dodge!"
+    longdesc = "Leave the room in style."
+
     @classmethod
     def execute(cls, user, client):
         client.kick('hoggit', user, 'Ejecting!')
         return "EJECT! EJECT! EJECT! " + user + " punched out."
 
 class guns(command):
+    shortdesc = "Strike down a target with great vengeance and furious anger"
+    longdesc = "Seriously, great vengeance and furious anger"
+
     @classmethod
     def execute(cls, user, client=None):
         return 'BBBRRRRRRRAAAAPPPPPPPPPP!!!!'
 
 class rifle(command):
+    shortdesc = "Fire a AGM-65"
+    longdesc = "No arguments fires one into the great blue yonder. [<target>]:  attempts to destroy <target>"
+
     @classmethod
     def execute(cls, target = None, user = None, client=None):
         if target is None:
@@ -114,13 +129,39 @@ class pickle(command):
 
         return message
 
+
+class help(command):
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        argc = len(args)
+        to_ret = ""
+        if argc == 0:
+            to_ret = "Type help <command> for more detailed information.\n"
+            for key,cls in Commander.actions.iteritems():
+                to_ret += "%s: %s\n" % (key, cls.shortdesc)
+
+            return to_ret
+
+        if argc == 1:
+            found = False
+            searchcls = args[0]
+            if not searchcls.startswith('!'):
+                searchcls = "!" + searchcls
+            try:
+                comclass = Commander.actions[searchcls]
+            except:
+                raise ActionException('Invalid command: ' + cls)
+
+            return searchcls + ": " + comclass.longdesc
+
 class Commander(object):
     actions = {
         '!hoggy':hoggy,
         '!guns' : guns,
         '!rifle': rifle,
         '!pickle': pickle,
-	'!eject':eject
+	    '!eject':eject,
+        '!help': help
     }
 
     def __init__(self, client):
