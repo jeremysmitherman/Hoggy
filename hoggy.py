@@ -3,7 +3,8 @@ from twisted.internet import reactor, protocol
 from twisted.python import log
 import re
 from sqlalchemy import *
-
+import threading, time
+import redditupdate
 
 import time, sys, random
 import os
@@ -55,6 +56,8 @@ class HoggyBot(irc.IRCClient):
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
         self.logger.log("[I have joined %s]" % channel)
+        self.reddit_update = redditupdate.RedditUpdateThread(self, channel)
+        self.reddit_update.start()
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
