@@ -73,7 +73,16 @@ class RedditUpdateThread(threading.Thread):
             if req.status_code != 200:
                 log.info('Failed getting new threads.')
             else:
-                data = json.loads(req.text)
+                try:
+                    data = json.loads(req.text)
+                except ValueError:
+                    # Bot was probably logged out for some reason
+                    log.info('logging in as zellyman...')
+                    self.session = requests.session()
+                    req = self.session.post('http://www.reddit.com/api/login/zellyman',
+                        data={'user':config.get('reddit','username'), 'passwd':config.get('reddit', 'password'), 'api_type':'json'}
+                    )
+                    continue
                 threads = data['data']['children']
                 for t in threads:
                     if t['data']['id'] not in self.seen_threads:
