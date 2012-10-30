@@ -8,12 +8,30 @@ import redditupdate
 
 import time, sys, random
 import os
+import ConfigParser
+import logging
 
 import actions
 
 HERE =  os.path.dirname(os.path.abspath(__file__))
 engine = create_engine('sqlite:///%s.sqlite' % HERE)
 metadata = MetaData(engine)
+
+config = ConfigParser.RawConfigParser()
+config.read('config.ini')
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+fh = logging.FileHandler(config.get('hoggy', 'logfile'))
+fh.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s %(name)-12s: %(levelname)-8s %(message)s')
+fh.setFormatter(formatter)
+
+sh = logging.StreamHandler()
+sh.setLevel(logging.DEBUG)
+
+log.addHandler(sh)
+log.addHandler(fh)
 
 class MessageLogger:
     def __init__(self, file):
@@ -31,7 +49,7 @@ class MessageLogger:
 
 class HoggyBot(irc.IRCClient):
     """A logging IRC bot."""
-    nickname = "hoggy"
+    nickname = config.get('irc', 'nick')
 
     def __init__(self, *args, **kwargs):
         self.commander = actions.Commander(self)
@@ -123,14 +141,11 @@ class HoggyBotFactory(protocol.ClientFactory):
 
 
 if __name__ == '__main__':
-    # initialize logging
-    log.startLogging(sys.stdout)
-
     # create factory protocol and application
-    f = HoggyBotFactory(sys.argv[1], sys.argv[2])
+    f = HoggyBotFactory(config.get('irc', 'channel'), config.get('irc', 'log'))
 
     # connect factory to this host and port
-    reactor.connectTCP("irc.freenode.net", 6667, f)
+    reactor.connectTCP(config.get('irc', 'host'),config.getint('irc', 'port') , f)
 
     # run bot
     reactor.run()
