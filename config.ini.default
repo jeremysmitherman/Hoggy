@@ -1,0 +1,15 @@
+[reddit]
+username=
+password=
+logile=redditthread.log
+subreddit=
+
+[irc]
+host=irc.freenode.net
+port=6667
+nick=
+channel=##hoggit
+log=irc.log
+
+[hoggy]
+logfile=hoggy.log
