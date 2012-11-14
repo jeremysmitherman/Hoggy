@@ -77,7 +77,7 @@ class RedditUpdateThread(threading.Thread):
                     data = json.loads(req.text)
                     if not data['data']['children']:
                         # Bot was probably logged out for some reason
-                        log.info('logging in as '+ config.get('reddit','username'+'...')
+                        log.info('logging in as '+ config.get('reddit','username') + '...')
                         self.session = requests.session()
                         req = self.session.post('http://www.reddit.com/api/login/'+config.get('reddit','username')+'',
                             data={'user':config.get('reddit','username'), 'passwd':config.get('reddit', 'password'), 'api_type':'json'}
