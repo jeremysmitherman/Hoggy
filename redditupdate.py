@@ -51,9 +51,9 @@ class RedditUpdateThread(threading.Thread):
         log.info('Loaded %d seen threads.', len(self.seen_threads))
 
     def run(self):
-        log.info('logging in as zellyman...')
+        log.info('logging in as '+config.get('reddit','username')+'...')
         self.session = requests.session()
-        req = self.session.post('http://www.reddit.com/api/login/zellyman', 
+        req = self.session.post('http://www.reddit.com/api/login/'+config.get('reddit','username')+'', 
             data={'user':config.get('reddit','username'), 'passwd':config.get('reddit', 'password'), 'api_type':'json'}
         )
 
@@ -68,21 +68,23 @@ class RedditUpdateThread(threading.Thread):
         while self.isRunning:
             log.debug('Enter main loop...')
             log.debug('Requesting new threads...')
-            headers = {"User-Agent":"New Thread updater.  /u/zellyman for /r/hoggit"}
+            headers = {"User-Agent":"New Thread updater.  /u/'+config.get('reddit','username')+' for /r/hoggit"}
             req = self.session.get(self.new_url, headers=headers)
             if req.status_code != 200:
                 log.info('Failed getting new threads.')
             else:
                 try:
                     data = json.loads(req.text)
+                    if not data['data']['children']:
+                        # Bot was probably logged out for some reason
+                        log.info('logging in as '+ config.get('reddit','username'+'...')
+                        self.session = requests.session()
+                        req = self.session.post('http://www.reddit.com/api/login/'+config.get('reddit','username')+'',
+                            data={'user':config.get('reddit','username'), 'passwd':config.get('reddit', 'password'), 'api_type':'json'}
+                        )
+                        continue
                 except ValueError:
-                    # Bot was probably logged out for some reason
-                    log.info('logging in as zellyman...')
-                    self.session = requests.session()
-                    req = self.session.post('http://www.reddit.com/api/login/zellyman',
-                        data={'user':config.get('reddit','username'), 'passwd':config.get('reddit', 'password'), 'api_type':'json'}
-                    )
-                    continue
+                    log.warn('ValueError when attempting to loadJson: [' + req.text +']')
                 threads = data['data']['children']
                 for t in threads:
                     if t['data']['id'] not in self.seen_threads:
