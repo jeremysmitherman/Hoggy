@@ -38,8 +38,8 @@ except ConfigParser.NoSectionError:
     exit()
 
 class MessageLogger:
-    def __init__(self, file):
-        self.file = file
+    def __init__(self, logFile):
+        self.logFile = logFile
 
     def log(self, message):
         """Write a message to the file."""
@@ -79,6 +79,7 @@ class HoggyBot(irc.IRCClient):
         """This will get called when the bot joins the channel."""
         self.logger.log("[I have joined %s]" % channel)
         self.reddit_update = redditupdate.RedditUpdateThread(self, channel)
+        self.reddit_update.parse_threads(self.reddit_update.request_threads(),False)
         self.reddit_update.start()
 
     def privmsg(self, user, channel, msg):
