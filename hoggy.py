@@ -41,13 +41,13 @@ class MessageLogger:
         self.logFile = logFile
 
     def log(self, message):
-        """Write a message to the file."""
+        """Write a message to the logFile."""
         timestamp = time.strftime("[%H:%M:%S]", time.localtime(time.time()))
-        self.file.write('%s %s\n' % (timestamp, message))
-        self.file.flush()
+        self.logFile.write('%s %s\n' % (timestamp, message))
+        self.logFile.flush()
 
     def close(self):
-        self.file.close()
+        self.logFile.close()
 
 
 class HoggyBot(irc.IRCClient):
@@ -141,7 +141,7 @@ class HoggyBotFactory(protocol.ClientFactory):
 
     def clientConnectionFailed(self, connector, reason):
         print "connection failed:", reason
-        reactor.stop()
+        reactor.stop() #@UndefinedVariable
 
 
 if __name__ == '__main__':
@@ -149,7 +149,7 @@ if __name__ == '__main__':
     f = HoggyBotFactory(config.get('irc', 'channel'), config.get('irc', 'log'))
 
     # connect factory to this host and port
-    reactor.connectTCP(config.get('irc', 'host'),config.getint('irc', 'port') , f)
+    reactor.connectTCP(config.get('irc', 'host'),config.getint('irc', 'port') , f) #@UndefinedVariable
 
     # run bot
-    reactor.run()
+    reactor.run()#@UndefinedVariable

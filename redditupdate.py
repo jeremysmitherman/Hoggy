@@ -107,3 +107,4 @@ class RedditUpdateThread(threading.Thread):
             self.session.modhash = obj['json']['data']['modhash']
         else:
             raise Exception('Invalid login')
+
