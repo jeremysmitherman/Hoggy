@@ -17,21 +17,25 @@ HERE =  os.path.dirname(os.path.abspath(__file__))
 engine = create_engine('sqlite:///%s.sqlite' % HERE)
 metadata = MetaData(engine)
 
-config = ConfigParser.RawConfigParser()
-config.read('config.ini')
+try:
+    config = ConfigParser.RawConfigParser()
+    config.read('config.ini')
 
-log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
-fh = logging.FileHandler(config.get('hoggy', 'logfile'))
-fh.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s %(name)-12s: %(levelname)-8s %(message)s')
-fh.setFormatter(formatter)
+    log = logging.getLogger(__name__)
+    log.setLevel(logging.DEBUG)
+    fh = logging.FileHandler(config.get('hoggy', 'logfile'))
+    fh.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s %(name)-12s: %(levelname)-8s %(message)s')
+    fh.setFormatter(formatter)
 
-sh = logging.StreamHandler()
-sh.setLevel(logging.DEBUG)
+    sh = logging.StreamHandler()
+    sh.setLevel(logging.DEBUG)
 
-log.addHandler(sh)
-log.addHandler(fh)
+    log.addHandler(sh)
+    log.addHandler(fh)
+except ConfigParser.NoSectionError:
+    print "Config file is un-readable or not present.  Make sure you've created a config.ini (see config.ini.default for an example)"
+    exit()
 
 class MessageLogger:
     def __init__(self, file):
