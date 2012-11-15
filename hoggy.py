@@ -141,7 +141,7 @@ class HoggyBotFactory(protocol.ClientFactory):
 
     def clientConnectionFailed(self, connector, reason):
         print "connection failed:", reason
-        reactor.stop() #@UndefinedVariable
+        reactor.stop()
 
 
 if __name__ == '__main__':
@@ -149,7 +149,7 @@ if __name__ == '__main__':
     f = HoggyBotFactory(config.get('irc', 'channel'), config.get('irc', 'log'))
 
     # connect factory to this host and port
-    reactor.connectTCP(config.get('irc', 'host'),config.getint('irc', 'port') , f) #@UndefinedVariable
+    reactor.connectTCP(config.get('irc', 'host'),config.getint('irc', 'port') , f)
 
     # run bot
-    reactor.run()#@UndefinedVariable
+    reactor.run()
