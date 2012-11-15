@@ -1,12 +1,11 @@
 from twisted.words.protocols import irc
 from twisted.internet import reactor, protocol
-from twisted.python import log
-import re
-from sqlalchemy import *
-import threading, time
+#from twisted.python import log
+#import re
+from sqlalchemy import create_engine, MetaData
 import redditupdate
 
-import time, sys, random
+import time#, sys, random
 import os
 import ConfigParser
 import logging

@@ -1,6 +1,6 @@
 from setup import quotes
 import re
-from sqlalchemy import *
+#from sqlalchemy import *
 import random
 
 class ActionException(Exception):
@@ -29,15 +29,15 @@ class hoggy(command):
         row = rs.fetchone()
         return row
 
-    def get_by_id(self, id):
-        q =  quotes.select().where('id=' + str(id))
+    def get_by_id(self, quoteId):
+        q =  quotes.select().where('id=' + str(quoteId))
         rs = q.execute()
         row = rs.fetchone()
         return row
 
-    def remove_quote(self, id):
-        q = quotes.delete().where("id=" + str(id))
-        rs = q.execute()
+    def remove_quote(self, quoteId):
+        q = quotes.delete().where("id=" + str(quoteId))
+        q.execute()
 
     @classmethod
     def execute(cls, *args, **kwargs):
@@ -49,8 +49,8 @@ class hoggy(command):
 
         elif argc == 1:
             try:
-                id = int(args[0])
-                row = hog.get_by_id(id)
+                quoteId = int(args[0])
+                row = hog.get_by_id(quoteId)
                 return '%s (#%d)' % (str(row['body']), row['id'])
             except:
                 return '!help for usage'
@@ -58,17 +58,17 @@ class hoggy(command):
         elif args[0] == 'add':
             string = " ".join(args[1:])
             string = unicode(string)
-            id = hog.add_quote(string)
+            quoteId = hog.add_quote(string)
             return "Added %s" % str(string)
 
         elif args[0] == 'remove':
             try:
-                id = int(args[1])
+                quoteId = int(args[1])
             except:
                 return '!help'
 
-            hog.remove_quote(id)
-            return "Deleted #%d" % id
+            hog.remove_quote(quoteId)
+            return "Deleted #%d" % quoteId
 
 class eject(command):
     shortdesc = "Get the hell out of Dodge!"
@@ -130,7 +130,7 @@ class pickle(command):
         return message
 
 
-class help(command):
+class print_help(command):
     @classmethod
     def execute(cls, *args, **kwargs):
         argc = len(args)
@@ -143,7 +143,7 @@ class help(command):
             return to_ret
 
         if argc == 1:
-            found = False
+            #found = False
             searchcls = args[0]
             if not searchcls.startswith('!'):
                 searchcls = "!" + searchcls
@@ -161,7 +161,7 @@ class Commander(object):
         '!rifle': rifle,
         '!pickle': pickle,
 	    '!eject':eject,
-        '!help': help
+        '!help': print_help
     }
 
     def __init__(self, client):
