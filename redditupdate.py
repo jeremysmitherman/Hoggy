@@ -84,15 +84,15 @@ class RedditUpdateThread(threading.Thread):
     def parse_threads(self, threadlist,verbose=True):
         for t in threadlist:
             try:
-            if t['data']['id'] not in self.seen_threads:
-                #This won't spew out things on its first run when creating the threads
-                if verbose:
-                    self.client.msg(self.channel, "NEW THREAD BY " + str(t['data']['author'])  + ": " + str(t['data']['title']) + " --- http://reddit.com" + str(t['data']['permalink']))
-                self.seen_threads.append(t['data']['id'])
-                with open(self.seenFile, 'w') as fh:
-                    pickle.dump(self.seen_threads, fh)
-                if verbose:
-                    time.sleep(5)
+                if t['data']['id'] not in self.seen_threads:
+                    #This won't spew out things on its first run when creating the threads
+                    if verbose:
+                        self.client.msg(self.channel, "NEW THREAD BY " + str(t['data']['author'])  + ": " + str(t['data']['title']) + " --- http://reddit.com" + str(t['data']['permalink']))
+                        self.seen_threads.append(t['data']['id'])
+                        with open(self.seenFile, 'w') as fh:
+                            pickle.dump(self.seen_threads, fh)
+                    if verbose:
+                        time.sleep(5)
     	    except:
                #Fuck it.  Try again later.  whatever.
                pass
