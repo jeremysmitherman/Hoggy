@@ -14,6 +14,14 @@ class command(object):
     def execute(self, *args):
         raise NotImplementedError
 
+class no(command):
+    longdesc = "For use in dire situations only."
+    shortdesc = "For dire situations."
+    
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        return "http://nooooooooooooooo.com/"
+
 class hoggy(command):
     longdesc = "with no arguments will display a random quote.  [add <quote>] will add the specified <quote> to the db. [#] Will display the quote with the specified ID"
     shortdesc = "Display or add Hoggyisms"
@@ -160,8 +168,9 @@ class Commander(object):
         '!guns' : guns,
         '!rifle': rifle,
         '!pickle': pickle,
-	    '!eject':eject,
-        '!help': print_help
+	'!eject':eject,
+        '!help': print_help,
+        '!no':no
     }
 
     def __init__(self, client):
