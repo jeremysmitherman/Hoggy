@@ -78,6 +78,27 @@ class hoggy(command):
             hog.remove_quote(quoteId)
             return "Deleted #%d" % quoteId
 
+class grab(command):
+    shortdesc = "Grab the last n lines of a specifc user and create a hoggyism"
+    longdesc = "Usage: !grab <user> <number of lines>  number of lines defaults to 1"
+
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        if len(args) == 1:
+            num_lines = 1
+        else:
+            try:
+                num_lines = int(args[1])
+	    except:
+                num_lines = 0
+
+        if num_lines < 1:
+            return kwargs['user'] + "... Don't be a dipshit."
+
+        quote = kwargs['client'].grabber.grab(args[0], num_lines)
+	return hoggy.execute('add', quote)
+	
+
 class eject(command):
     shortdesc = "Get the hell out of Dodge!"
     longdesc = "Leave the room in style."
@@ -170,7 +191,8 @@ class Commander(object):
         '!pickle': pickle,
 	'!eject':eject,
         '!help': print_help,
-        '!no':no
+        '!no':no,
+        '!grab': grab
     }
 
     def __init__(self, client):

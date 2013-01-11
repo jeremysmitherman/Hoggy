@@ -1,7 +1,6 @@
 from twisted.words.protocols import irc
 from twisted.internet import reactor, protocol
-#from twisted.python import log
-#import re
+from grabber import Grabber
 from sqlalchemy import create_engine, MetaData
 import redditupdate
 
@@ -56,6 +55,7 @@ class HoggyBot(irc.IRCClient):
 
     def __init__(self, *args, **kwargs):
         self.commander = actions.Commander(self)
+        self.grabber = Grabber()
 
     # callbacks for events
     def connectionMade(self):
@@ -92,6 +92,7 @@ class HoggyBot(irc.IRCClient):
             return
 
         message = self.commander.recv(msg, user)
+        self.grabber.stack(user, msg)
         if message:
             self.msg(channel, message)
 

@@ -82,8 +82,8 @@ class RedditUpdateThread(threading.Thread):
             return threads
         
     def parse_threads(self, threadlist,verbose=True):
-        for t in threadlist:
-            try:
+        try:    
+            for t in threadlist:
                 if t['data']['id'] not in self.seen_threads:
                     #This won't spew out things on its first run when creating the threads
                     if verbose:
@@ -93,9 +93,9 @@ class RedditUpdateThread(threading.Thread):
                             pickle.dump(self.seen_threads, fh)
                     if verbose:
                         time.sleep(5)
-    	    except:
-               #Fuck it.  Try again later.  whatever.
-               pass
+    	except:
+           #Fuck it.  Try again later.  whatever.
+           pass
                     
     def login(self):
         log.info('logging in as '+config.get('reddit','username')+'.')
