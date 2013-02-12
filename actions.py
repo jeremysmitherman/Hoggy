@@ -95,6 +95,9 @@ class grab(command):
         if num_lines < 1:
             return kwargs['user'] + "... Don't be a dipshit."
 
+	if args[0].lower() == 'hoggy':
+            return "Got no time to be playing with myself..."
+
         quote = kwargs['client'].grabber.grab(args[0], num_lines)
 	return hoggy.execute('add', quote)
 	
