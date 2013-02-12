@@ -22,6 +22,17 @@ class no(command):
     def execute(cls, *args, **kwargs):
         return "http://nooooooooooooooo.com/"
 
+class blame(command):
+    longdesc = "No seriously, fuck that guy."
+    shortdesc = "Fuck that guy."
+
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        if not len(args):
+            return "Usage: !blame <user>"
+        
+	return "Dammit, %s.  Now you've gone and Hoozin'ed it up." % args[0]
+
 class hoggy(command):
     longdesc = "with no arguments will display a random quote.  [add <quote>] will add the specified <quote> to the db. [#] Will display the quote with the specified ID"
     shortdesc = "Display or add Hoggyisms"
@@ -172,10 +183,9 @@ class print_help(command):
             for key,cls in Commander.actions.iteritems():
                 to_ret += "%s: %s\n" % (key, cls.shortdesc)
 
-            return to_ret
+            kwargs['client'].msg(kwargs['user'],to_ret)
 
         if argc == 1:
-            #found = False
             searchcls = args[0]
             if not searchcls.startswith('!'):
                 searchcls = "!" + searchcls
@@ -195,7 +205,8 @@ class Commander(object):
 	'!eject':eject,
         '!help': print_help,
         '!no':no,
-        '!grab': grab
+        '!grab': grab,
+        '!blame' : blame
     }
 
     def __init__(self, client):
