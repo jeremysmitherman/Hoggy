@@ -1,7 +1,9 @@
 from setup import quotes
+from random import choice
 import re
 #from sqlalchemy import *
 import random
+import requests
 
 class ActionException(Exception):
     def __init__(self, message):
@@ -30,8 +32,11 @@ class blame(command):
     def execute(cls, *args, **kwargs):
         if not len(args):
             return "Usage: !blame <user>"
-        
-	return "Dammit, %s.  Now you've gone and Hoozin'ed it up." % args[0]
+        if args[0].lower() == 'hoozin':
+            return "^"
+        elif args[0].lower() == 'hoggy':
+            return "What'd I do?"
+        return "Dammit, %s.  Now you've gone and Hoozin'ed it up." % args[0]
 
 class hoggy(command):
     longdesc = "with no arguments will display a random quote.  [add <quote>] will add the specified <quote> to the db. [#] Will display the quote with the specified ID"
@@ -172,6 +177,33 @@ class pickle(command):
 
         return message
 
+class wire(command):
+    @classmethod
+    def execute(cls, target = None, user = None, client = None):
+        if target is None:
+            messages = [
+                "launches a Vikhir at empty space. Can't be worse than aiming at something."
+            ]
+            return "%s %s" % (user, choice(messages))
+        elif target.lower() == user.lower():
+            messages = [
+                "manages to fire a Vikhir at themself. Lasers aren't for pointing into cockpits. Naughty!"
+            ]
+            return "%s %s" % (user, choice(messages)) 
+        else:
+            messages = [
+                "but they crashed for no good reason",
+                "it plowed into the ground",
+                "it overshot the target",
+                "it undershot the target",
+                "but their laser burned out",
+                "however their tail fell off",
+                "but their autopilot flipped out",
+                "but their trim reset",
+                "and it hit the target! .... nah",
+                "but it fell in love with a passing Hind and they embraced awkwardly"
+            ]
+            return "%s launched a Vikhir at %s, %s." % (user, target, choice(messages))
 
 class print_help(command):
     @classmethod
@@ -202,15 +234,37 @@ class Commander(object):
         '!guns' : guns,
         '!rifle': rifle,
         '!pickle': pickle,
-	'!eject':eject,
+        '!eject':eject,
         '!help': print_help,
         '!no':no,
         '!grab': grab,
-        '!blame' : blame
+        '!blame' : blame,
+        '!wire' : wire
     }
 
     def __init__(self, client):
         self.client = client
+
+
+    def getYoutubeTitle(self, user, id):
+        r = requests.get("".join(["http://gdata.youtube.com/feeds/api/videos/", id, "?v=2&alt=json"]))
+        if r.status_code != 200:
+            if r.status_code == 400:
+                return user + ", why you gotta make life hard? Make it a good link."
+            return "Youtube Hoozin'ed it up. (HTTP %d)" % r.status_code
+        try:
+            sec = int(r.json()['entry']['media$group']['media$content'][0]['duration'])
+            min = sec / 60
+            hr = min / 60
+            sec = sec % 60
+            min = min % 60
+            title = r.json()['entry']['media$group']['media$title']['$t'].encode('utf-8')
+            if hr != 0:
+                return "%s [%02d:%02d:%02d]" % (title, hr, min, sec)
+            else:
+                return "%s [%02d:%02d]" % (title, min, sec)
+        except IndexError:
+            return user + ", that video isn't available or doesn't exist."
 
     def recv(self, message, user):
         if message.startswith('!'):
@@ -254,5 +308,21 @@ class Commander(object):
                 if sub.startswith('/'):
                     sub = sub[1:]
                 return "http://reddit.com/%s" % sub
-
-
+            
+            #our youtube lookups, short and long have different formats
+            YTshort = "youtu.be/" in message
+            YTlong = "youtube.com/watch?" in message
+            if YTshort or YTlong:
+                parts = message.split()
+                for part in parts:
+                    if part.startswith('http:'):
+                        if YTlong:
+                            try:
+                                id = part.split('v=')[1]
+                            except IndexError:
+                                return user + " Hoozin'ed that youtube link!"
+                            id = id.split('&')[0]
+                        elif YTshort:
+                            id = part.rsplit('/', 1)[1]
+                        return self.getYoutubeTitle(user, id)
+                        
