@@ -52,6 +52,14 @@ class hoggy(command):
         rs = q.execute()
         row = rs.fetchone()
         return row
+    
+    def search(self, message):
+        print "Search string: "+ message
+        q = quotes.select().order_by('id').where('body LIKE "%'+message+'%"')
+        print q
+        rs = q.execute()
+        rows = rs.fetchall()
+        return rows
 
     def get_by_id(self, quoteId):
         q =  quotes.select().where('id=' + str(quoteId))
@@ -90,9 +98,27 @@ class hoggy(command):
                 quoteId = int(args[1])
             except:
                 return '!help'
+            if hog.remove_quote(quoteId):
+                return "Deleted #%d" % quoteId
+            else:
+                return "No quote with id: %s" %quoteId
+        elif args[0] == 'search':
+            try:
+                search_string = str(args[1])
+                if (len(search_string) < 3):
+                    return "Minimum search requires 3 letters"
+            except:
+                return "L2P"
+            
+            results = hog.search(search_string)
+            return_string = ""
+            for result in results:
+                return_string += "#%d: \"%s\"\n" % (result[0], result[1])
+       
+            return return_string.encode('ascii','replace')        
+        else:
+            return "Invalid usage. Check help."
 
-            hog.remove_quote(quoteId)
-            return "Deleted #%d" % quoteId
 
 class grab(command):
     shortdesc = "Grab the last n lines of a specifc user and create a hoggyism"
