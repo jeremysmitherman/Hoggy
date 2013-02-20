@@ -55,6 +55,7 @@ class RedditUpdateThread(threading.Thread):
   
     def run(self):
         log.info('Starting main loop')
+        self.parse_threads(self.request_threads(), False)
         while self.isRunning:
             log.debug('Enter main loop...')
             self.parse_threads(self.request_threads())
