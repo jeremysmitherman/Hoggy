@@ -35,3 +35,4 @@ config.ini
 *.log
 *.out
 *~
+*.sqlite
