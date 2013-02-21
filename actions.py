@@ -4,6 +4,7 @@ import re
 #from sqlalchemy import *
 import random
 import requests
+import time
 
 class ActionException(Exception):
     def __init__(self, message):
@@ -56,7 +57,6 @@ class hoggy(command):
     def search(self, message):
         print "Search string: "+ message
         q = quotes.select().order_by('id').where('body LIKE "%'+message+'%"')
-        print q
         rs = q.execute()
         rows = rs.fetchall()
         return rows
@@ -113,9 +113,9 @@ class hoggy(command):
             results = hog.search(search_string)
             return_string = ""
             for result in results:
-                return_string += "#%d: \"%s\"\n" % (result[0], result[1])
-       
-            return return_string.encode('ascii','replace')        
+		return_string += "#%d: \"%s\"\n" % (result[0], result[1])	
+	          
+            kwargs['client'].msg(kwargs['user'],return_string.encode('ascii','replace'))        
         else:
             return "Invalid usage. Check help."
 
