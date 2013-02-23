@@ -205,6 +205,16 @@ class wire(command):
             ]
             return "%s launched a Vikhir at %s, %s." % (user, target, choice(messages))
 
+class hug(command):
+    @classmethod
+    def execute(cls, target = None, user = None, client = None):
+        if target is None:
+            return "What, hug myself?"
+        elif target.lower() == user.lower():
+            return "Hugging yourself? Keep it clean!"
+        else:
+            return "%s gives %s a lingering hug." % (user, target)
+            
 class print_help(command):
     @classmethod
     def execute(cls, *args, **kwargs):
@@ -239,7 +249,8 @@ class Commander(object):
         '!no':no,
         '!grab': grab,
         '!blame' : blame,
-        '!wire' : wire
+        '!wire' : wire,
+        '!hug' : hug
     }
 
     def __init__(self, client):
@@ -254,15 +265,15 @@ class Commander(object):
             return "Youtube Hoozin'ed it up. (HTTP %d)" % r.status_code
         try:
             sec = int(r.json()['entry']['media$group']['media$content'][0]['duration'])
-            min = sec / 60
-            hr = min / 60
+            minutes = sec / 60
+            hr = minutes / 60
             sec = sec % 60
-            min = min % 60
+            minutes = minutes % 60
             title = r.json()['entry']['media$group']['media$title']['$t'].encode('utf-8')
             if hr != 0:
-                return "%s [%02d:%02d:%02d]" % (title, hr, min, sec)
+                return "%s [%02d:%02d:%02d]" % (title, hr, minutes, sec)
             else:
-                return "%s [%02d:%02d]" % (title, min, sec)
+                return "%s [%02d:%02d]" % (title, minutes, sec)
         except IndexError:
             return user + ", that video isn't available or doesn't exist."
 
@@ -315,14 +326,15 @@ class Commander(object):
             if YTshort or YTlong:
                 parts = message.split()
                 for part in parts:
-                    if part.startswith('http:'):
+                    if part.startswith('http:') or part.startswith('https:'):
                         if YTlong:
                             try:
-                                id = part.split('v=')[1]
+                                YTid = part.split('v=')[1]
                             except IndexError:
                                 return user + " Hoozin'ed that youtube link!"
-                            id = id.split('&')[0]
+                            YTid = YTid.split('#')[0] #strip start times
+                            YTid = YTid.split('&')[0] #strip other junk
                         elif YTshort:
-                            id = part.rsplit('/', 1)[1]
-                        return self.getYoutubeTitle(user, id)
+                            YTid = part.rsplit('/', 1)[1]
+                        return self.getYoutubeTitle(user, YTid)
                         
