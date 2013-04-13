@@ -178,6 +178,14 @@ class guns(command):
 
         return message
 
+class thanks(command):
+    @classmethod
+    def execute(cls, target = None, user = None, client=None):
+        if target is not None:
+            return "What about me?"
+        else:
+            return "No problem, %s" % (user)
+
 class rifle(command):
     shortdesc = "Fire a AGM-65"
     longdesc = "No arguments fires one into the great blue yonder. [<target>]:  attempts to destroy <target>"
@@ -248,6 +256,7 @@ class wire(command):
             ]
             return "%s launched a Vikhir at %s, %s." % (user, target, choice(messages))
 
+
 class hug(command):
     @classmethod
     def execute(cls, target = None, user = None, client = None):
@@ -293,7 +302,8 @@ class Commander(object):
         '!grab': grab,
         '!blame' : blame,
         '!wire' : wire,
-        '!hug' : hug
+        '!hug' : hug,
+        '!thanks' : thanks,
     }
 
     def __init__(self, client):
