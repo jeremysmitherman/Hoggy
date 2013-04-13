@@ -158,8 +158,25 @@ class guns(command):
     longdesc = "Seriously, great vengeance and furious anger"
 
     @classmethod
-    def execute(cls, user, client=None):
-        return 'BBBRRRRRRRAAAAPPPPPPPPPP!!!!'
+    def execute(cls, target = None, user = None, client=None):
+        if target is None:
+            return 'BBBRRRRRRRAAAAPPPPPPPPPP!!!!'
+        try:
+            message =  "%s sets up a gun run...\n" % (user)
+
+            if random.randint(0,100) > 33:
+                message += "BBBRRRRRRRAAAAPPPPPPPPPP!!!! \n"
+                message += "%s pulverized %s with great vengeance and furious anger" % (user, target)
+            elif random.randint(0,100) > 33:
+                message += "%s screwed up their attack run, but managed to pull out." % (user)
+            else: 
+                message += "%s ignored the VMU's 'PULL UP' and smashed into %s" % (user, target)
+                client.kick('hoggit', user, 'Is no more.')
+        except Exception, ex:
+            print ex
+            message = "%s screwed up their attack run, but managed to pull out." % (user)
+
+        return message
 
 class rifle(command):
     shortdesc = "Fire a AGM-65"
