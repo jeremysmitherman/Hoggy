@@ -94,12 +94,16 @@ class HoggyBot(irc.IRCClient):
         message = self.commander.recv(msg, user)
         self.grabber.stack(user, msg)
         if message:
-            self.msg(channel, message)
+            if message[:3] == "/me":
+                message = message[4:]
+                self.describe(channel,message)
+            else:
+                self.msg(channel, message)
 
-    def action(self, user, channel, msg):
-        """This will get called when the bot sees someone do an action."""
-        user = user.split('!', 1)[0]
-        self.logger.log("* %s %s" % (user, msg))
+    #def action(self, user, channel, msg):
+    #    """This will get called when the bot sees someone do an action."""
+    #    user = user.split('!', 1)[0]
+    #    self.logger.log("* %s %s" % (user, msg))
 
     # irc callbacks
 
