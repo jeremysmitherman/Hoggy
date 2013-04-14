@@ -5,6 +5,8 @@ import re
 import random
 import requests
 import time
+import urllib
+import BeautifulSoup
 
 class ActionException(Exception):
     def __init__(self, message):
@@ -167,7 +169,7 @@ class guns(command):
             if random.randint(0,100) > 33:
                 message += "BBBRRRRRRRAAAAPPPPPPPPPP!!!! \n"
                 message += "%s pulverized %s with great vengeance and furious anger" % (user, target)
-            elif random.randint(0,100) > 33:
+            elif random.randint(0,100) > 60:
                 message += "%s screwed up their attack run, but managed to pull out." % (user)
             else: 
                 message += "%s ignored the VMU's 'PULL UP' and smashed into %s" % (user, target)
@@ -256,6 +258,22 @@ class wire(command):
             ]
             return "%s launched a Vikhir at %s, %s." % (user, target, choice(messages))
 
+class ron(command):
+    @classmethod
+    def execute(cls, target = None, user = None, client = None):
+        if target is not None:
+            return "%s, you little fuck." % (target)
+        else:
+            messages = [
+                "I would smack you in the mouth if I wouldn't feel bad for hitting a retard afterwards.",
+                "If you project Excel, there better be fucking numbers in it somewhere.",
+                "I would trade 3 of you for a talking version of Wikipedia or Wolfram Alpha. Seriously, don't get comfortable fucksticks.",
+                "It's not rape if you yell out \"SURPRISE!\"",
+                "Windows Vista was like a whore house when the ships come in"
+            ]  
+            return "%s" % (choice(messages))
+                
+             
 
 class hug(command):
     @classmethod
@@ -265,7 +283,7 @@ class hug(command):
         elif target.lower() == user.lower():
             return "Hugging yourself? Keep it clean!"
         else:
-            return "%s gives %s a lingering hug." % (user, target)
+            return "%s gives %s a lingering hug. %s likes it. Likes it a lot...\nThey continue their embrace, %s gently stroking %s's face, and %s leans in for a kiss." % (user, target, target, target, user, user)
             
 class print_help(command):
     @classmethod
@@ -303,6 +321,7 @@ class Commander(object):
         '!blame' : blame,
         '!wire' : wire,
         '!hug' : hug,
+        '!ron' : ron,
         '!thanks' : thanks,
     }
 
@@ -374,20 +393,11 @@ class Commander(object):
                 return "http://reddit.com/%s" % sub
             
             #our youtube lookups, short and long have different formats
-            YTshort = "youtu.be/" in message
-            YTlong = "youtube.com/watch?" in message
-            if YTshort or YTlong:
+            website = "http" in message
+            if website:
                 parts = message.split()
                 for part in parts:
-                    if part.startswith('http:') or part.startswith('https:'):
-                        if YTlong:
-                            try:
-                                YTid = part.split('v=')[1]
-                            except IndexError:
-                                return user + " Hoozin'ed that youtube link!"
-                            YTid = YTid.split('#')[0] #strip start times
-                            YTid = YTid.split('&')[0] #strip other junk
-                        elif YTshort:
-                            YTid = part.rsplit('/', 1)[1]
-                        return self.getYoutubeTitle(user, YTid)
+                    if part.startswith('http:') or part.startswith('https:'):                        
+                        soup = BeautifulSoup.BeautifulSoup(urllib.urlopen(part))
+                        return "Title: " + soup.title.string.encode('ascii', 'ignore')
 
