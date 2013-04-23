@@ -6,7 +6,7 @@ Hoggy is an IRC Bot with some built in reddit oriented functionality.  He will r
 Installation
 ====
 
-Hoggy requires Twisted, SQLAlchemy, and Requests.  All easily obtainable from pip, therefore it's recommended to run Hoggy in his own virtualenv.
+Hoggy requires Twisted, SQLAlchemy, BeautifulSoup and Requests.  All easily obtainable from pip, therefore it's recommended to run Hoggy in his own virtualenv.
 Once the prereqs are installed, run python setup.py.  This creates the sqlite database needed for the quotes.
 
 Usage
