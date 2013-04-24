@@ -17,6 +17,26 @@ class command(object):
     def execute(self, *args):
         raise NotImplementedError
 
+class lightning(command):
+    @classmethod
+    def execute(cls, target = None, user = None, client = None):
+        return "LIGHTNING BOLT! %s takes %d damage" % (target, random.randint(0,9999))
+
+class ron(command):
+    @classmethod
+    def execute(cls, target = None, user = None, client = None):
+        if target is not None:
+            return "%s, you little fuck." % (target)
+        else:
+            messages = [
+                "\"Hush you I'm recalling the time Ron sent me cocaine via USPS\"",
+                "\"\"Listen,\" he said, leaning closer, \"I\'m a fucking piranha in this pool. All these other socially awkward people, I eat them up. That\'s right, fucker,\" he added. \"That\'s just how I roll.\" He grabbed a woman seated to his right. A tattoo of a tree covered her back. George pointed. I looked. A small R.G. was nestled on one of the branches.  --RonUSMC\"",
+                "Ron doesn\'t miss you, fuck you.",
+                "Ron\'s a fucking piranha in this pool",
+                "What\'s up, faggots? --Ron"
+            ]  
+            return "%s" % (choice(messages))
+
 class no(command):
     longdesc = "For use in dire situations only."
     shortdesc = "For dire situations."
@@ -304,6 +324,8 @@ class Commander(object):
         '!wire' : wire,
         '!hug' : hug,
         '!thanks' : thanks,
+	'!ron': ron,
+        '!bolt': lightning
     }
 
     def __init__(self, client):

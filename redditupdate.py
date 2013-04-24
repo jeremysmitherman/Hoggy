@@ -67,7 +67,11 @@ class RedditUpdateThread(threading.Thread):
     def request_threads(self):
         log.debug('Requesting new threads...')
         headers = {"User-Agent":"New Thread updater.  /u/'+config.get('reddit','username')+' for /r/hoggit"}
-        req = self.session.get(self.new_url, headers=headers)
+        try:
+            req = self.session.get(self.new_url, headers=headers)
+        except:
+            pass
+
         if req.status_code != 200:
             log.info('Failed getting new threads.')
         else:
@@ -89,11 +93,11 @@ class RedditUpdateThread(threading.Thread):
                     #This won't spew out things on its first run when creating the threads
                     if verbose:
                         self.client.msg(self.channel, "NEW THREAD BY " + str(t['data']['author'])  + ": " + str(t['data']['title']) + " --- http://reddit.com" + str(t['data']['permalink']))
-                        self.seen_threads.append(t['data']['id'])
-                        with open(self.seenFile, 'w') as fh:
-                            pickle.dump(self.seen_threads, fh)
-                    if verbose:
                         time.sleep(5)
+
+                    self.seen_threads.append(t['data']['id'])
+                    with open(self.seenFile, 'w') as fh:
+                        pickle.dump(self.seen_threads, fh)
     	except:
            #Fuck it.  Try again later.  whatever.
            pass
