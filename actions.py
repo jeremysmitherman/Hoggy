@@ -7,6 +7,8 @@ import requests
 import time
 import urllib
 import BeautifulSoup
+import praw
+from sidebar import template
 
 class ActionException(Exception):
     def __init__(self, message):
@@ -18,6 +20,28 @@ class command(object):
 
     def execute(self, *args):
         raise NotImplementedError
+
+class new(command):
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        if args[0] == '!hoggy':
+            if int(args[1]):
+                header = hoggy.execute(args[1])
+            else:
+                return "Usage: !new hoggy 15"
+        else:
+            header =  " ".join(args).replace("=","\=")
+        print "got new header '%s'" % header
+	manager = praw.Reddit("HoggyBot for /r/hoggit by /u/zellyman")
+        manager.login("hoggybot", "hoggit3fw")
+        subreddit = manager.get_subreddit("hoggit")
+        settings = subreddit.get_settings()
+        new_desc = "### %s \n=\n\n" % header
+        new_desc += template
+	print "Setting new desc to %s" % new_desc        
+	subreddit.set_settings("Hoggit Fighter Wing", description=new_desc)
+
+        return "Header updated."
 
 class lightning(command):
     @classmethod
@@ -344,7 +368,8 @@ class Commander(object):
         '!ron' : ron,
         '!thanks' : thanks,
 	'!ron': ron,
-        '!bolt': lightning
+        '!bolt': lightning,
+        '!new': new
     }
 
     def __init__(self, client):
