@@ -355,6 +355,7 @@ class wire(command):
             ]
             return "%s launched a Vikhir at %s, %s." % (user, target, choice(messages))
 
+<<<<<<< HEAD
 class ron(command):
     @classmethod
     def execute(cls, target = None, user = None, client = None):
@@ -372,6 +373,8 @@ class ron(command):
                 
              
 
+=======
+>>>>>>> 0c9434421742291dd1da284e46d8aac89f5048df
 class hug(command):
     @classmethod
     def execute(cls, target = None, user = None, client = None):
@@ -380,7 +383,11 @@ class hug(command):
         elif target.lower() == user.lower():
             return "Hugging yourself? Keep it clean!"
         else:
+<<<<<<< HEAD
             return "%s gives %s a lingering hug. %s likes it. Likes it a lot...\nThey continue their embrace, %s gently stroking %s's face, and %s leans in for a kiss.\nVolvstok looks on with sad, lonely eyes." % (user, target, target, target, user, user)
+=======
+            return "%s gives %s a lingering hug." % (user, target)
+>>>>>>> 0c9434421742291dd1da284e46d8aac89f5048df
             
 class print_help(command):
     @classmethod
@@ -417,6 +424,7 @@ class Commander(object):
         '!grab': grab,
         '!blame' : blame,
         '!wire' : wire,
+<<<<<<< HEAD
         '!hug' : hug,
         '!ron' : ron,
         '!thanks' : thanks,
@@ -425,6 +433,9 @@ class Commander(object):
         '!new': new,
         '!when': when,
         '!settime': settime
+=======
+        '!hug' : hug
+>>>>>>> 0c9434421742291dd1da284e46d8aac89f5048df
     }
 
     def __init__(self, client):
@@ -499,7 +510,22 @@ class Commander(object):
             if website:
                 parts = message.split()
                 for part in parts:
+<<<<<<< HEAD
                     if part.startswith('http:') or part.startswith('https:'):                        
                         soup = BeautifulSoup.BeautifulSoup(urllib.urlopen(part))
                         return "Title: " + soup.title.string.encode('ascii', 'ignore')
 
+=======
+                    if part.startswith('http:') or part.startswith('https:'):
+                        if YTlong:
+                            try:
+                                YTid = part.split('v=')[1]
+                            except IndexError:
+                                return user + " Hoozin'ed that youtube link!"
+                            YTid = YTid.split('#')[0] #strip start times
+                            YTid = YTid.split('&')[0] #strip other junk
+                        elif YTshort:
+                            YTid = part.rsplit('/', 1)[1]
+                        return self.getYoutubeTitle(user, YTid)
+                        
+>>>>>>> 0c9434421742291dd1da284e46d8aac89f5048df

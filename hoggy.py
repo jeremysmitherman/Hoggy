@@ -77,9 +77,10 @@ class HoggyBot(irc.IRCClient):
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
         self.logger.log("[I have joined %s]" % channel)
-        self.reddit_update = redditupdate.RedditUpdateThread(self, channel)
-        self.reddit_update.parse_threads(self.reddit_update.request_threads(),False)
-        self.reddit_update.start()
+        print "joined", channel
+        #self.reddit_update = redditupdate.RedditUpdateThread(self, channel)
+        #self.reddit_update.parse_threads(self.reddit_update.request_threads(),False)
+        #self.reddit_update.start()
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
@@ -87,6 +88,7 @@ class HoggyBot(irc.IRCClient):
 
         # Check to see if they're sending me a private message
         if channel == self.nickname:
+            print "received PM from", user, ":", msg
             message = self.commander.recv(msg,user)
             self.msg(user, message)
             return
