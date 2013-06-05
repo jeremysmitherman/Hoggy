@@ -1,7 +1,6 @@
-from setup import quotes
+from setup import quotes, times
 from random import choice
 import re
-#from sqlalchemy import *
 import random
 import requests
 import time
@@ -422,7 +421,9 @@ class Commander(object):
         '!thanks' : thanks,
 	'!ron': ron,
         '!bolt': lightning,
-        '!new': new
+        '!new': new,
+        '!when': when,
+        '!settime':settime
     }
 
     def __init__(self, client):
