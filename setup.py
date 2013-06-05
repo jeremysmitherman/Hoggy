@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer,String
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer,String, Float
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
