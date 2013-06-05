@@ -75,8 +75,8 @@ class settime(command):
         return "Your clock is now set at {0}".format(get_adjusted_time(hours))
 
 class new(command):
-	shortdesc = "Add a hoggyism to the great database in the sky."
-	longdesc = "Seriously, why are you still using this? Use hoggy and grab"
+	shortdesc = "Update the subreddit header with something extremely thought-provoking or insightful."
+	longdesc = "Now with added sidebar garbling!"
     @classmethod
     def execute(cls, *args, **kwargs):
         if args[0] == '!hoggy':
@@ -100,7 +100,7 @@ class new(command):
 
 class lightning(command):
 	shortdesc = "THUNDER STRIKE"
-	longdesc = 'http://www.youtube.com/watch?v=j_ekugPKqFw'
+	longdesc = "http://www.youtube.com/watch?v=j_ekugPKqFw"
     @classmethod
     def execute(cls, target = None, user = None, client = None):
         return "LIGHTNING BOLT! %s takes %d damage" % (target, random.randint(0,9999))
@@ -142,7 +142,7 @@ class blame(command):
             return "What'd I do?"
 		messages = [
 			"I concur, %s is absolutely responsible.",
-			"Dammit, %s, now you\'ve gone and Hoozin\'ed it up."
+			"Dammit, %s, now you've gone and Hoozin'ed it up."
 		]
         return choice(messages) % args[0]
 
@@ -330,6 +330,10 @@ class pickle(command):
 
             message = messages[random.randint(0,2)]
             return user + ' ' + message
+		elif target.lower() == user.lower():
+			return "%s rolls 180 degrees and drops his bombs..." % (user),
+			client.kick('hoggit', user, 'Self-immolation is not the way forward'),
+			return "... before realising what a silly mistake he made"
 		bombs = [
 			'Mk. 82',
 			'Mk. 84',
