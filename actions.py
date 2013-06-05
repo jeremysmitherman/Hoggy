@@ -21,6 +21,11 @@ class command(object):
     def execute(self, *args):
         raise NotImplementedError
 
+class ping(command):
+    @classmethod
+    def execute(cls, target=None, user = None, client = None):
+        return choice(["pong", "pang", "poong", "ping?", "Wasn't that Mulan's fake name?"])
+
 class when(command):
     shortdesc = "Gets the current time for the given user"
     longdesc = "Try !when <user>, requires that user to have done a !settime first"
@@ -82,8 +87,9 @@ class urbandictionary(command):
 	return "%s: %s" % (" ".join(args), defs[0]['definition'].encode('utf-8'))
 
 class new(command):
-	shortdesc = "Update the subreddit header with something extremely thought-provoking or insightful."
-	longdesc = "Now with added sidebar garbling!"
+    shortdesc = "Update the subreddit header with something extremely thought-provoking or insightful."
+    longdesc = "Now with added sidebar garbling!"
+    
     @classmethod
     def execute(cls, *args, **kwargs):
         if args[0] == '!hoggy':
@@ -106,8 +112,8 @@ class new(command):
         return "Header updated."
 
 class lightning(command):
-	shortdesc = "THUNDER STRIKE"
-	longdesc = "http://www.youtube.com/watch?v=j_ekugPKqFw"
+    shortdesc = "THUNDER STRIKE"
+    longdesc = "http://www.youtube.com/watch?v=j_ekugPKqFw"
     @classmethod
     def execute(cls, target = None, user = None, client = None):
         return "LIGHTNING BOLT! %s takes %d damage" % (target, random.randint(0,9999))
@@ -147,10 +153,10 @@ class blame(command):
             return "^"
         elif args[0].lower() == 'hoggy':
             return "What'd I do?"
-		messages = [
-			"I concur, %s is absolutely responsible.",
-			"Dammit, %s, now you've gone and Hoozin'ed it up."
-		]
+        messages = [
+            "I concur, %s is absolutely responsible.",
+            "Dammit, %s, now you've gone and Hoozin'ed it up."
+        ]
         return choice(messages) % args[0]
 
 class hoggy(command):
@@ -293,8 +299,9 @@ class guns(command):
         return message
 
 class thanks(command):
-	shortdesc = "For polite people only"
-	longdesc = "Like this ever gets any use"
+    shortdesc = "For polite people only"
+    longdesc = "Like this ever gets any use"
+    
     @classmethod
     def execute(cls, target = None, user = None, client=None):
         if target is not None:
@@ -324,8 +331,9 @@ class rifle(command):
         return message
 
 class pickle(command):
-	shortdesc = "Drop the bombs of peace onto the target of desperation"
-	longdesc = "Like this will ever hit anything"
+    shortdesc = "Drop the bombs of peace onto the target of desperation"
+    longdesc = "Like this will ever hit anything"
+    
     @classmethod
     def execute(cls, target = None, user = None, client = None):
         if target is None:
@@ -337,21 +345,20 @@ class pickle(command):
 
             message = messages[random.randint(0,2)]
             return user + ' ' + message
-		elif target.lower() == user.lower():
-			return "%s rolls 180 degrees and drops his bombs..." % (user),
-			client.kick('hoggit', user, 'Self-immolation is not the way forward'),
-			return "... before realising what a silly mistake he made"
-		bombs = [
-			'Mk. 82',
-			'Mk. 84',
-			'CBU-87',
-			'CBU-97',
-			'GBU-10',
-			'GBU-12',
-			'GBU-38',
-			'GBU-31'
-		]
-		types = [ 'CCIP', 'CCRP' ]
+        elif target.lower() == user.lower():
+           client.kick('hoggit', user, 'Self-immolation is not the way forward')
+           return "%s rolls 180 degrees and drops his bombs... before realising what a silly mistake he made" % user
+        bombs = [
+            'Mk. 82',
+            'Mk. 84',
+            'CBU-87',
+            'CBU-97',
+            'GBU-10',
+            'GBU-12',
+            'GBU-38',
+            'GBU-31'
+        ]
+        types = [ 'CCIP', 'CCRP' ]
         message = '%s released a %s %s toward %s\n' % (user, choice(types), choice(bombs), target)
         if random.randint(0,100) > 33:
             message += '%s obliterated %s with a well aimed Drop.' % (user, target)
@@ -361,8 +368,9 @@ class pickle(command):
         return message
 
 class wire(command):
-	shortdesc = "Accurately simulates a Vikhir missile"
-	longdesc = "Good luck hitting anything"
+    shortdesc = "Accurately simulates a Vikhir missile"
+    longdesc = "Good luck hitting anything"
+    
     @classmethod
     def execute(cls, target = None, user = None, client = None):
         if target is None:
@@ -391,8 +399,9 @@ class wire(command):
             return "%s launched a Vikhir at %s, %s." % (user, target, choice(messages))
 
 class ron(command):
-	shortdesc = "Why the fuck would you use this command\? It\'s a complete waste of time."
-	longdesc = "Kill yourself"
+    shortdesc = "Why the fuck would you use this command\? It\'s a complete waste of time."
+    longdesc = "Kill yourself"
+    
     @classmethod
     def execute(cls, target = None, user = None, client = None):
         if target is not None:
@@ -410,8 +419,9 @@ class ron(command):
              
 
 class hug(command):
-	shortdesc = "Hoggit is not responsible for any rape allegations that may arise from using this command"
-	longdesc = "It makes me cringe when I think about it"
+    shortdesc = "Hoggit is not responsible for any rape allegations that may arise from using this command"
+    longdesc = "It makes me cringe when I think about it"
+    
     @classmethod
     def execute(cls, target = None, user = None, client = None):
         if target is None:
@@ -422,8 +432,9 @@ class hug(command):
             return "%s gives %s a lingering hug. %s likes it. Likes it a lot...\nThey continue their embrace, %s gently stroking %s's face, and %s leans in for a kiss." % (user, target, target, target, user, user)
             
 class print_help(command):
-	shortdesc = "Cause a infinite loop by reading the help out again"
-	longdesc = "This isn't good for the environment you know"
+    shortdesc = "Cause a infinite loop by reading the help out again"
+    longdesc = "This isn't good for the environment you know"
+    
     @classmethod
     def execute(cls, *args, **kwargs):
         argc = len(args)
@@ -466,7 +477,8 @@ class Commander(object):
         '!new': new,
         '!when': when,
         '!settime':settime,
-        '!ud': urbandictionary
+        '!ud': urbandictionary,
+        '!ping':ping
     }
 
     def __init__(self, client):
