@@ -73,6 +73,14 @@ class settime(command):
             ins.execute(name=user, time=hours)
         return "Your clock is now set at {0}".format(get_adjusted_time(hours))
 
+class urbandictionary(command):
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        r = requests.get("http://api.urbandictionary.com/v0/define?term=%s" % " ".join(args))
+        json = r.json()
+	defs = json['list']
+	return "%s: %s" % (" ".join(args), defs[0]['definition'].encode('utf-8'))
+
 class new(command):
 	shortdesc = "Update the subreddit header with something extremely thought-provoking or insightful."
 	longdesc = "Now with added sidebar garbling!"
@@ -457,7 +465,8 @@ class Commander(object):
         '!bolt': lightning,
         '!new': new,
         '!when': when,
-        '!settime':settime
+        '!settime':settime,
+        '!ud': urbandictionary
     }
 
     def __init__(self, client):
