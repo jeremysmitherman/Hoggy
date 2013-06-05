@@ -1,4 +1,4 @@
-from setup import quotes, times
+from setup import quotes
 from random import choice
 import re
 #from sqlalchemy import *
@@ -6,8 +6,8 @@ import random
 import requests
 import time
 import urllib
-#import BeautifulSoup
-#import praw
+import BeautifulSoup
+import praw
 from sidebar import template
 from time import gmtime
 
@@ -75,7 +75,6 @@ class settime(command):
         return "Your clock is now set at {0}".format(get_adjusted_time(hours))
 
 class new(command):
-    shortdesc = "Sets the r/hoggit header to a quote"
     @classmethod
     def execute(cls, *args, **kwargs):
         if args[0] == '!hoggy':
@@ -86,14 +85,14 @@ class new(command):
         else:
             header =  " ".join(args).replace("=","\=")
         print "got new header '%s'" % header
-        manager = praw.Reddit("HoggyBot for /r/hoggit by /u/zellyman")
+	manager = praw.Reddit("HoggyBot for /r/hoggit by /u/zellyman")
         manager.login("hoggybot", "hoggit3fw")
         subreddit = manager.get_subreddit("hoggit")
         settings = subreddit.get_settings()
         new_desc = "### %s \n=\n\n" % header
         new_desc += template
-        print "Setting new desc to %s" % new_desc        
-        subreddit.set_settings("Hoggit Fighter Wing", description=new_desc)
+	print "Setting new desc to %s" % new_desc        
+	subreddit.set_settings("Hoggit Fighter Wing", description=new_desc)
 
         return "Header updated."
 
@@ -103,7 +102,6 @@ class lightning(command):
         return "LIGHTNING BOLT! %s takes %d damage" % (target, random.randint(0,9999))
 
 class ron(command):
-    shortdesc = "Spews a Ronism"
     @classmethod
     def execute(cls, target = None, user = None, client = None):
         if target is not None:
@@ -134,11 +132,11 @@ class blame(command):
     def execute(cls, *args, **kwargs):
         if not len(args):
             return "Usage: !blame <user>"
-        if args[0].lower() == 'jers':
+        if args[0].lower() == 'hoozin':
             return "^"
         elif args[0].lower() == 'hoggy':
-            return "No way, !blame jers"
-        return "Dammit, %s.  Now you've gone and Jers'ed it up." % args[0]
+            return "What'd I do?"
+        return "Dammit, %s.  Now you've gone and Hoozin'ed it up." % args[0]
 
 class hoggy(command):
     longdesc = "with no arguments will display a random quote.  [add <quote>] will add the specified <quote> to the db. [#] Will display the quote with the specified ID"
@@ -214,7 +212,8 @@ class hoggy(command):
             results = hog.search(search_string)
             return_string = ""
             for result in results:
-                return_string += "#%d: \"%s\"\n" % (result[0], result[1])	
+		return_string += "#%d: \"%s\"\n" % (result[0], result[1])	
+	          
             kwargs['client'].msg(kwargs['user'],return_string.encode('ascii','replace'))        
         else:
             return "Invalid usage. Check help."
@@ -231,17 +230,18 @@ class grab(command):
         else:
             try:
                 num_lines = int(args[1])
-            except:
+	    except:
                 num_lines = 0
 
         if num_lines < 1:
             return kwargs['user'] + "... Don't be a dipshit."
 
-        if args[0].lower() == 'hoggy':
+	if args[0].lower() == 'hoggy':
             return "Got no time to be playing with myself..."
-        quote = kwargs['client'].grabber.grab(args[0], num_lines)
-        return hoggy.execute('add', quote)
 
+        quote = kwargs['client'].grabber.grab(args[0], num_lines)
+	return hoggy.execute('add', quote)
+	
 
 class eject(command):
     shortdesc = "Get the hell out of Dodge!"
@@ -355,7 +355,6 @@ class wire(command):
             ]
             return "%s launched a Vikhir at %s, %s." % (user, target, choice(messages))
 
-<<<<<<< HEAD
 class ron(command):
     @classmethod
     def execute(cls, target = None, user = None, client = None):
@@ -373,8 +372,6 @@ class ron(command):
                 
              
 
-=======
->>>>>>> 0c9434421742291dd1da284e46d8aac89f5048df
 class hug(command):
     @classmethod
     def execute(cls, target = None, user = None, client = None):
@@ -383,11 +380,7 @@ class hug(command):
         elif target.lower() == user.lower():
             return "Hugging yourself? Keep it clean!"
         else:
-<<<<<<< HEAD
-            return "%s gives %s a lingering hug. %s likes it. Likes it a lot...\nThey continue their embrace, %s gently stroking %s's face, and %s leans in for a kiss.\nVolvstok looks on with sad, lonely eyes." % (user, target, target, target, user, user)
-=======
-            return "%s gives %s a lingering hug." % (user, target)
->>>>>>> 0c9434421742291dd1da284e46d8aac89f5048df
+            return "%s gives %s a lingering hug. %s likes it. Likes it a lot...\nThey continue their embrace, %s gently stroking %s's face, and %s leans in for a kiss." % (user, target, target, target, user, user)
             
 class print_help(command):
     @classmethod
@@ -424,18 +417,12 @@ class Commander(object):
         '!grab': grab,
         '!blame' : blame,
         '!wire' : wire,
-<<<<<<< HEAD
         '!hug' : hug,
         '!ron' : ron,
         '!thanks' : thanks,
-        '!ron': ron,
+	'!ron': ron,
         '!bolt': lightning,
-        '!new': new,
-        '!when': when,
-        '!settime': settime
-=======
-        '!hug' : hug
->>>>>>> 0c9434421742291dd1da284e46d8aac89f5048df
+        '!new': new
     }
 
     def __init__(self, client):
@@ -510,22 +497,7 @@ class Commander(object):
             if website:
                 parts = message.split()
                 for part in parts:
-<<<<<<< HEAD
                     if part.startswith('http:') or part.startswith('https:'):                        
                         soup = BeautifulSoup.BeautifulSoup(urllib.urlopen(part))
                         return "Title: " + soup.title.string.encode('ascii', 'ignore')
 
-=======
-                    if part.startswith('http:') or part.startswith('https:'):
-                        if YTlong:
-                            try:
-                                YTid = part.split('v=')[1]
-                            except IndexError:
-                                return user + " Hoozin'ed that youtube link!"
-                            YTid = YTid.split('#')[0] #strip start times
-                            YTid = YTid.split('&')[0] #strip other junk
-                        elif YTshort:
-                            YTid = part.rsplit('/', 1)[1]
-                        return self.getYoutubeTitle(user, YTid)
-                        
->>>>>>> 0c9434421742291dd1da284e46d8aac89f5048df

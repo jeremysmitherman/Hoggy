@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer,String, Float
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer,String
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -14,7 +14,6 @@ times = Table('times', metadata,
     Column('name', String(20), primary_key=True),
     Column('time', Float)
 )
-
 if __name__ == '__main__':
     quotes.create()
     times.create()
