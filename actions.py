@@ -545,8 +545,8 @@ class Commander(object):
             except Exception, ex:
                 return "Hoozin'ed it up: unexpected exception: {0}".format(str(ex))
         else:
-            if  message.startswith('r/') or ' r/' in message:
-                obj = re.search('r/[^\s\n]*',message)
+            if  ' r/' or '/r/' in message:
+                obj = re.search(r'[/]?r/[^\s\n]*',message)
                 sub = obj.group()
                 if sub.startswith('/'):
                     sub = sub[1:]
