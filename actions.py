@@ -84,8 +84,8 @@ class urbandictionary(command):
     def execute(cls, *args, **kwargs):
         r = requests.get("http://api.urbandictionary.com/v0/define?term=%s" % " ".join(args))
         json = r.json()
-	defs = json['list']
-	return "%s: %s" % (" ".join(args), defs[0]['definition'].encode('utf-8'))
+        defs = json['list']
+        return "%s: %s" % (" ".join(args), defs[0]['definition'].encode('utf-8'))
 
 class new(command):
     shortdesc = "Update the subreddit header with something extremely thought-provoking or insightful."
@@ -100,15 +100,15 @@ class new(command):
                 return "Usage: !new hoggy 15"
         else:
             header =  " ".join(args).replace("=","\=")
-        print "got new header '%s'" % header
-	manager = praw.Reddit("HoggyBot for /r/hoggit by /u/zellyman")
+        
+        manager = praw.Reddit("HoggyBot for /r/hoggit by /u/zellyman")
         manager.login("hoggybot", "hoggit3fw")
         subreddit = manager.get_subreddit("hoggit")
         settings = subreddit.get_settings()
         new_desc = "### %s \n=\n\n" % header
         new_desc += template
-	print "Setting new desc to %s" % new_desc        
-	subreddit.set_settings("Hoggit Fighter Wing", description=new_desc)
+        
+        subreddit.set_settings("Hoggit Fighter Wing", description=new_desc)
 
         return "Header updated."
 
@@ -236,8 +236,8 @@ class hoggy(command):
             results = hog.search(search_string)
             return_string = ""
             for result in results:
-		return_string += "#%d: \"%s\"\n" % (result[0], result[1])	
-	          
+                return_string += "#%d: \"%s\"\n" % (result[0], result[1])   
+              
             kwargs['client'].msg(kwargs['user'],return_string.encode('ascii','replace'))
         elif args[0]== 'count':
             number = hog.count()
@@ -257,18 +257,18 @@ class grab(command):
         else:
             try:
                 num_lines = int(args[1])
-	    except:
+            except:
                 num_lines = 0
 
         if num_lines < 1:
             return kwargs['user'] + "... Don't be a dipshit."
 
-	if args[0].lower() == 'hoggy':
+        if args[0].lower() == 'hoggy':
             return "Got no time to be playing with myself..."
 
         quote = kwargs['client'].grabber.grab(args[0], num_lines)
-	return hoggy.execute('add', quote)
-	
+        return hoggy.execute('add', quote)
+    
 
 class eject(command):
     shortdesc = "Get the hell out of Dodge!"
