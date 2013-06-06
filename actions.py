@@ -1,4 +1,4 @@
-from setup import quotes, times
+from setup import quotes, times, engine
 from random import choice
 import re
 import random
@@ -171,7 +171,8 @@ class hoggy(command):
     # Hoggyism operations
     def add_quote(self, message):
         q = quotes.insert()
-        return q.execute(body=message)
+        q.execute(body=message)
+        return engine.scalar("select max(id) from quotes")
 
     def get_random(self):
         q =  quotes.select(limit=1).order_by('RANDOM()')
@@ -217,7 +218,8 @@ class hoggy(command):
             string = " ".join(args[1:])
             string = unicode(string)
             quoteId = hog.add_quote(string)
-            return "Added %s" % str(string)
+
+            return "Added {0} (#{1})".format(str(string), quoteId)
 
         elif args[0] == 'remove':
             try:
@@ -242,7 +244,7 @@ class hoggy(command):
                 return_string += "#%d: \"%s\"\n" % (result[0], result[1])   
               
             kwargs['client'].msg(kwargs['user'],return_string.encode('ascii','replace'))
-        elif args[0]== 'count':
+        elif args[0] == 'count':
             number = hog.count()
             return "There are currently %s hoggyisms stored!" % str(number)
         else:
