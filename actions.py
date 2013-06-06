@@ -9,6 +9,10 @@ import BeautifulSoup
 import praw
 from sidebar import template
 from time import gmtime
+import ConfigParser
+
+config = ConfigParser.RawConfigParser()
+config.read('config.ini')
 
 class ActionException(Exception):
     def __init__(self, message):
@@ -56,7 +60,7 @@ class settime(command):
             return 
         reg = re.compile("^(ZULU|GMT|UTC)(\+|-)[0-9]{1,2}[:|\.]{0,1}[0-9]{0,2}$")
         if not reg.match(time):
-            return "Hey, try the format: " + settime.wanted
+            return "Hey, try the format: {0}".format(settime.wanted)
         dir = 1
         if '-' in time:
             dir = -1
@@ -82,10 +86,10 @@ class settime(command):
 class urbandictionary(command):
     @classmethod
     def execute(cls, *args, **kwargs):
-        r = requests.get("http://api.urbandictionary.com/v0/define?term=%s" % " ".join(args))
+        r = requests.get("http://api.urbandictionary.com/v0/define?term={0}".format(" ".join(args)))
         json = r.json()
         defs = json['list']
-        return "%s: %s" % (" ".join(args), defs[0]['definition'].encode('utf-8'))
+        return "{0}: {1}".format(" ".join(args), defs[0]['definition'].encode('utf-8'))
 
 class new(command):
     shortdesc = "Update the subreddit header with something extremely thought-provoking or insightful."
@@ -102,8 +106,8 @@ class new(command):
             header =  " ".join(args).replace("=","\=")
         
         manager = praw.Reddit("HoggyBot for /r/hoggit by /u/zellyman")
-        manager.login("hoggybot", "hoggit3fw")
-        subreddit = manager.get_subreddit("hoggit")
+        manager.login(config.get('reddit', 'username'), config.get('reddit', 'password'))
+        subreddit = manager.get_subreddit(config.get('reddit', 'subreddit'))
         settings = subreddit.get_settings()
         new_desc = "### %s \n=\n\n" % header
         new_desc += template
@@ -176,8 +180,7 @@ class hoggy(command):
         return row
     
     def search(self, message):
-        print "Search string: "+ message
-        q = quotes.select().order_by('id').where('body LIKE "%'+message+'%"')
+        q = quotes.select().order_by('id').where('body LIKE "%{0}%"'.format(message))
         rs = q.execute()
         rows = rs.fetchall()
         return rows
@@ -189,7 +192,7 @@ class hoggy(command):
         return row
 
     def remove_quote(self, quoteId):
-        q = quotes.delete().where("id=" + str(quoteId))
+        q = quotes.delete().where("id={0}".format(str(quoteId)))
         q.execute()
     def count(self):
         return quotes.count()
@@ -261,7 +264,7 @@ class grab(command):
                 num_lines = 0
 
         if num_lines < 1:
-            return kwargs['user'] + "... Don't be a dipshit."
+            return "{0}... Don't be a dipshit.".format(kwargs['user'])
 
         if args[0].lower() == 'hoggy':
             return "Got no time to be playing with myself..."
@@ -277,7 +280,7 @@ class eject(command):
     @classmethod
     def execute(cls, user, client):
         client.kick('hoggit', user, 'Ejecting!')
-        return "EJECT! EJECT! EJECT! " + user + " punched out."
+        return "EJECT! EJECT! EJECT! {0} punched out.".format(user)
 
 class guns(command):
     shortdesc = "Strike down a target with great vengeance and furious anger"
@@ -455,13 +458,13 @@ class print_help(command):
         if argc == 1:
             searchcls = args[0]
             if not searchcls.startswith('!'):
-                searchcls = "!" + searchcls
+                searchcls = "!{0}".format(searchcls)
             try:
                 comclass = Commander.actions[searchcls]
             except:
                 raise ActionException('Invalid command: ' + cls)
 
-            return searchcls + ": " + comclass.longdesc
+            return "{0}: {1}".format(searchcls, comclass.longdesc)
 
 class Commander(object):
     actions = {
@@ -491,7 +494,7 @@ class Commander(object):
         self.client = client
 
 
-    def getYoutubeTitle(self, user, id):
+    """def getYoutubeTitle(self, user, id):
         r = requests.get("".join(["http://gdata.youtube.com/feeds/api/videos/", id, "?v=2&alt=json"]))
         if r.status_code != 200:
             if r.status_code == 400:
@@ -509,7 +512,7 @@ class Commander(object):
             else:
                 return "%s [%02d:%02d]" % (title, minutes, sec)
         except IndexError:
-            return user + ", that video isn't available or doesn't exist."
+            return user + ", that video isn't available or doesn't exist."""
 
     def recv(self, message, user):
         if message.startswith('!'):
@@ -538,7 +541,7 @@ class Commander(object):
             except ActionException, ex:
                 return str(ex)
             except Exception, ex:
-                return "Hoozin'ed it up: unexpected exception: " + str(ex)
+                return "Hoozin'ed it up: unexpected exception: {0}".format(str(ex))
         else:
             if  message.startswith('r/') or ' r/' in message:
                 obj = re.search('r/[^\s\n]*',message)
@@ -561,5 +564,5 @@ class Commander(object):
                 for part in parts:
                     if part.startswith('http:') or part.startswith('https:'):                        
                         soup = BeautifulSoup.BeautifulSoup(urllib.urlopen(part))
-                        return "Title: " + soup.title.string.encode('ascii', 'ignore')
+                        return "Title: {0}".format(soup.title.string.encode('ascii', 'ignore'))
 
