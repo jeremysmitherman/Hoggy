@@ -24,7 +24,7 @@ class command(object):
 class ping(command):
     @classmethod
     def execute(cls, target=None, user = None, client = None):
-        return choice(["pong", "pang", "poong", "ping?", "Wasn't that Mulan's fake name?"])
+        return choice(["pong", "pang", "poong", "ping?", "pop", "pa-pong!", "kill yourse- sorry, pong", "ta-ping!", "Wasn't that Mulan's fake name?"])
 
 class when(command):
     shortdesc = "Gets the current time for the given user"
@@ -190,7 +190,9 @@ class hoggy(command):
     def remove_quote(self, quoteId):
         q = quotes.delete().where("id=" + str(quoteId))
         q.execute()
-
+    def count(self):
+        return quotes.count()
+        
     @classmethod
     def execute(cls, *args, **kwargs):
         hog = cls()
@@ -235,7 +237,10 @@ class hoggy(command):
             for result in results:
 		return_string += "#%d: \"%s\"\n" % (result[0], result[1])	
 	          
-            kwargs['client'].msg(kwargs['user'],return_string.encode('ascii','replace'))        
+            kwargs['client'].msg(kwargs['user'],return_string.encode('ascii','replace'))
+        elif args[0]== 'count':
+            number = hog.count()
+            return "There are currently %s hoggyisms stored!" % str(number)
         else:
             return "Invalid usage. Check help."
 
@@ -380,7 +385,7 @@ class wire(command):
             return "%s %s" % (user, choice(messages))
         elif target.lower() == user.lower():
             messages = [
-                "manages to fire a Vikhir at themself. Lasers aren't for pointing into cockpits. Naughty!"
+                "manages to fire a Vikhir at themself. Lasers aren't for pointing into cockpits. Doesn't mattter much though, it still missed."
             ]
             return "%s %s" % (user, choice(messages)) 
         else:
@@ -399,7 +404,7 @@ class wire(command):
             return "%s launched a Vikhir at %s, %s." % (user, target, choice(messages))
 
 class ron(command):
-    shortdesc = "Why the fuck would you use this command\? It\'s a complete waste of time."
+    shortdesc = "Why the fuck would you use this command? It's a complete waste of time."
     longdesc = "Kill yourself"
     
     @classmethod
@@ -472,7 +477,7 @@ class Commander(object):
         '!hug' : hug,
         '!ron' : ron,
         '!thanks' : thanks,
-	'!ron': ron,
+        '!ron': ron,
         '!bolt': lightning,
         '!new': new,
         '!when': when,
