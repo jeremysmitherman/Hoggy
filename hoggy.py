@@ -2,6 +2,7 @@ from twisted.words.protocols import irc
 from twisted.internet import reactor, protocol
 from grabber import Grabber
 from sqlalchemy import create_engine, MetaData
+from setup import engine, metadata
 import redditupdate
 
 import time#, sys, random
@@ -10,10 +11,6 @@ import ConfigParser
 import logging
 
 import actions
-
-HERE =  os.path.dirname(os.path.abspath(__file__))
-engine = create_engine('sqlite:///%s.sqlite' % HERE)
-metadata = MetaData(engine)
 
 try:
     config = ConfigParser.RawConfigParser()
