@@ -16,7 +16,7 @@ if config.get('db', 'type') == 'mysql':
     MSQLHost = config.get('db', 'mysqlhost')
     MSQLPort = config.get('db', 'mysqlport')
     MSQLDB = config.get('db', 'mysqldatabase')
-    engine = create_engine('mysql://%s:%s@%s:%s/%s' % (MSQLUname, MSqlPW, MSQLHost, MSQLPort, MSQLDB))
+    engine = create_engine('mysql://%s:%s@%s:%s/%s' % (MSQLUname, MSQLPW, MSQLHost, MSQLPort, MSQLDB))
 else:
     HERE = os.path.dirname(os.path.abspath(__file__))
     SQLITEFILE = config.get('db', 'file')
@@ -35,3 +35,4 @@ times = Table('times', metadata,
 if __name__ == '__main__':
     quotes.create()
     times.create()
+    print "Database setup completed successfully."
