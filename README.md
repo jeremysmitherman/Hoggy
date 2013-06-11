@@ -7,20 +7,21 @@ Requirements
 ====
 
 Hoggy needs the following Python modules:
-Twisted
-SQLAlchemy
-BeautifulSoup
-Requests
 
-You can get all of the above really easily from PIP, so it's suggested that you run Hoggy in its own virtualenv.
+* Twisted
+* SQLAlchemy
+* BeautifulSoup
+* Requests
+
+You can get all of the above really easily from PIP, so it's suggested that you run Hoggy in its own virtualenv (if you know how).
 
 Installation
 ====
 
-1: Make a copy of config.ini.default as config.ini, and open it in your favourite text editor.
-2: Fill out config.ini, which should be fairly self explanatory. If you're using MySQL, make sure you create a database and user for Hoggy.
-3: Execute setup.py to create the required database tables
-4: Wonder how you didn't hoozin' it up
+1. Make a copy of config.ini.default as config.ini, and open it in your favourite text editor.
+2. Fill out config.ini, which should be fairly self explanatory. If you're using MySQL, make sure you create a database and user for Hoggy.
+3. Execute setup.py to create the required database tables
+4. Wonder how you didn't hoozin' it up
 
 Usage
 ====
@@ -37,3 +38,5 @@ Known Bugs
 ====
 
 There are some regex related issues with the subreddit and user linking,  subreddit's right now must be linked without the leading slash r/hoggit instead of /r/hoggit for example.
+
+MySQL support is new and untested, but there's no reason that it shouldn't work.
