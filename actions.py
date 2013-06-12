@@ -165,7 +165,7 @@ class blame(command):
         return choice(messages) % args[0]
 
 class hoggy(command):
-    longdesc = "with no arguments will display a random quote.  [add <quote>] will add the specified <quote> to the db. [#] Will display the quote with the specified ID"
+    longdesc = "with no arguments will display a random quote. [#] will display the quote with the specified ID. [add <quote>] will add the specified <quote> to the db. [search <string>] will look for that string in the db. [count] should show the number of hoggyisms stored."
     shortdesc = "Display or add Hoggyisms"
 
     # Hoggyism operations
@@ -195,8 +195,7 @@ class hoggy(command):
     def remove_quote(self, quoteId):
         q = quotes.delete().where("id={0}".format(str(quoteId)))
         q.execute()
-    def count(self):
-        return quotes.count()
+    def count(self): return quotes.count()
         
     @classmethod
     def execute(cls, *args, **kwargs):
@@ -236,7 +235,7 @@ class hoggy(command):
                 if (len(search_string) < 3):
                     return "Minimum search requires 3 letters"
             except:
-                return "L2P"
+                return "Your search string hoozed it up"
             
             results = hog.search(search_string)
             return_string = ""
@@ -246,9 +245,9 @@ class hoggy(command):
             kwargs['client'].msg(kwargs['user'],return_string.encode('ascii','replace'))
         elif args[0] == 'count':
             number = hog.count()
-            return "There are currently %s hoggyisms stored!" % str(number)
+            return "There are currently {0} hoggyisms stored!".format(number)
         else:
-            return "Invalid usage. Check help."
+            return "You hoozed it up, do !help hoggy"
 
 
 class grab(command):
