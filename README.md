@@ -13,7 +13,10 @@ Hoggy needs the following Python modules:
 * BeautifulSoup
 * Requests
 
-You can get all of the above really easily from PIP, so it's suggested that you run Hoggy in its own virtualenv (if you know how).
+You can get all of the above really easily from PIP by executing the following (or similar) from Hoggy's directory:
+    pip install -r requirements.txt
+
+We also suggest that you run Hoggy in its own virtualenv (if you know how).
 
 Installation
 ====
