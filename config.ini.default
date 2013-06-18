@@ -8,7 +8,7 @@ subreddit=
 host=irc.freenode.net
 port=6667
 nick=
-channel=##hoggit
+channels=##hoggit
 log=irc.log
 
 [hoggy]

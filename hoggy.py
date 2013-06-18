@@ -73,7 +73,8 @@ class HoggyBot(irc.IRCClient):
 
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
-        self.join(self.factory.channel)
+        for channel in self.factory.channels:
+            self.join(channel)
 
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
@@ -132,8 +133,8 @@ class HoggyBotFactory(protocol.ClientFactory):
     A new protocol instance will be created each time we connect to the server.
     """
 
-    def __init__(self, channel, filename):
-        self.channel = channel
+    def __init__(self, channels, filename):
+        self.channels = channels.split(",")
         self.filename = filename
 
     def buildProtocol(self, addr):
@@ -152,7 +153,7 @@ class HoggyBotFactory(protocol.ClientFactory):
 
 if __name__ == '__main__':
     # create factory protocol and application
-    f = HoggyBotFactory(config.get('irc', 'channel'), config.get('irc', 'log'))
+    f = HoggyBotFactory(config.get('irc', 'channels'), config.get('irc', 'log'))
 
     # connect factory to this host and port
     reactor.connectTCP(config.get('irc', 'host'),config.getint('irc', 'port') , f)
