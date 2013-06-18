@@ -5,7 +5,7 @@ logile=redditthread.log
 subreddit=
 
 [irc]
-host=irc.freenode.net
+host=irc.4chan
 port=6667
 nick=
 channels=##hoggit
@@ -13,3 +13,15 @@ log=irc.log
 
 [hoggy]
 logfile=hoggy.log
+
+[db]
+# type can be sqlite or mysql
+type=sqlite
+# if you're using sqlite, put your intended filename in here
+file=hoggit.sqlite
+# here's all the stuff for mysql
+mysqlusername=
+mysqlpassword=
+mysqlhost=localhost
+mysqlport=3306
+mysqldatabase=hoggy

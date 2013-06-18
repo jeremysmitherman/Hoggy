@@ -1,0 +1,4 @@
+twisted
+sqlalchemy
+beautifulsoup
+requests
