@@ -10,6 +10,7 @@ import ConfigParser
 import logging
 
 import actions
+import sys
 
 HERE =  os.path.dirname(os.path.abspath(__file__))
 engine = create_engine('sqlite:///%s.sqlite' % HERE)
@@ -17,7 +18,7 @@ metadata = MetaData(engine)
 
 try:
     config = ConfigParser.RawConfigParser()
-    config.read('config.ini')
+    config.read(sys.argv[1])
 
     log = logging.getLogger(__name__)
     log.setLevel(logging.DEBUG)
