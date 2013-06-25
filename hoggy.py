@@ -144,8 +144,8 @@ class HoggyBotFactory(protocol.ClientFactory):
         connector.connect()
 
     def clientConnectionFailed(self, connector, reason):
-        print "connection failed:", reason
-        reactor.stop()
+        print "connection failed, retrying..."
+        connector.connect()
 
 
 if __name__ == '__main__':
