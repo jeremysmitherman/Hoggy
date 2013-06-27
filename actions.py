@@ -10,6 +10,10 @@ import praw
 from sidebar import template
 from time import gmtime
 import ConfigParser
+import cleverbot
+
+cb = cleverbot.Session()
+times = 0
 
 config = ConfigParser.RawConfigParser()
 config.read('config.ini')
@@ -28,8 +32,7 @@ class command(object):
 class ping(command):
     @classmethod
     def execute(cls, target=None, user = None, client = None):
-        return choice(["pong", "pang", "poong", "ping?", "pop", "pa-pong!", "kill yourse- sorry, pong", "ta-ping!", "Wasn't that Mulan's fake name?"])
-
+        return choice(["Hoozin'd it up.  Naw Just kidding. Pong.", "pong", "pang", "poong", "ping?", "pop", "pa-pong!", "kill yourse- sorry, pong", "ta-ping!", "Wasn't that Mulan's fake name?"])
 
 class when(command):
     shortdesc = "Gets the current time for the given user"
@@ -89,6 +92,8 @@ class urbandictionary(command):
         r = requests.get("http://api.urbandictionary.com/v0/define?term={0}".format(" ".join(args)))
         json = r.json()
         defs = json['list']
+        if not len(defs):
+            return "No definintions found.  Try !eject."
         return "{0}: {1}".format(" ".join(args), defs[0]['definition'].encode('utf-8'))
 
 class new(command):
@@ -516,6 +521,13 @@ class Commander(object):
             return user + ", that video isn't available or doesn't exist."""
 
     def recv(self, message, user):
+        global cb, times
+        convo_starters = ["hoggy,", "@hoggy", "hoggy:"]
+        for s in convo_starters:
+            if message.startswith(s):
+                print("Asking %s" % message.replace(s, '').strip())
+                times += 1
+                return cb.Ask(message.replace(s, '').strip())
         if message.startswith('!'):
             # Awww snap, it's a hoggy action
             try:
