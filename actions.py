@@ -127,21 +127,6 @@ class lightning(command):
     def execute(cls, target = None, user = None, client = None):
         return "LIGHTNING BOLT! %s takes %d damage" % (target, random.randint(0,9999))
 
-class ron(command):
-    @classmethod
-    def execute(cls, target = None, user = None, client = None):
-        if target is not None:
-            return "%s, you little fuck." % (target)
-        else:
-            messages = [
-                "\"Hush you I'm recalling the time Ron sent me cocaine via USPS\"",
-                "\"\"Listen,\" he said, leaning closer, \"I\'m a fucking piranha in this pool. All these other socially awkward people, I eat them up. That\'s right, fucker,\" he added. \"That\'s just how I roll.\" He grabbed a woman seated to his right. A tattoo of a tree covered her back. George pointed. I looked. A small R.G. was nestled on one of the branches.  --RonUSMC\"",
-                "Ron doesn\'t miss you, fuck you.",
-                "Ron\'s a fucking piranha in this pool",
-                "What\'s up, faggots? --Ron"
-            ]  
-            return "%s" % (choice(messages))
-
 class no(command):
     longdesc = "For use in dire situations only."
     shortdesc = "For dire situations."
@@ -426,7 +411,12 @@ class ron(command):
                 "If you project Excel, there better be fucking numbers in it somewhere.",
                 "I would trade 3 of you for a talking version of Wikipedia or Wolfram Alpha. Seriously, don't get comfortable fucksticks.",
                 "It's not rape if you yell out \"SURPRISE!\"",
-                "Windows Vista was like a whore house when the ships come in"
+                "Windows Vista was like a whore house when the ships come in",
+                "\"Hush you I'm recalling the time Ron sent me cocaine via USPS\"",
+                "\"\"Listen,\" he said, leaning closer, \"I\'m a fucking piranha in this pool. All these other socially awkward people, I eat them up. That\'s right, fucker,\" he added. \"That\'s just how I roll.\" He grabbed a woman seated to his right. A tattoo of a tree covered her back. George pointed. I looked. A small R.G. was nestled on one of the branches.  --RonUSMC\"",
+                "Ron doesn\'t miss you, fuck you.",
+                "Ron\'s a fucking piranha in this pool",
+                "What\'s up, faggots? --Ron"
             ]  
             return "%s" % (choice(messages))
                 
@@ -498,27 +488,6 @@ class Commander(object):
     def __init__(self, client):
         self.client = client
 
-
-    """def getYoutubeTitle(self, user, id):
-        r = requests.get("".join(["http://gdata.youtube.com/feeds/api/videos/", id, "?v=2&alt=json"]))
-        if r.status_code != 200:
-            if r.status_code == 400:
-                return user + ", why you gotta make life hard? Make it a good link."
-            return "Youtube Hoozin'ed it up. (HTTP %d)" % r.status_code
-        try:
-            sec = int(r.json()['entry']['media$group']['media$content'][0]['duration'])
-            minutes = sec / 60
-            hr = minutes / 60
-            sec = sec % 60
-            minutes = minutes % 60
-            title = r.json()['entry']['media$group']['media$title']['$t'].encode('utf-8')
-            if hr != 0:
-                return "%s [%02d:%02d:%02d]" % (title, hr, minutes, sec)
-            else:
-                return "%s [%02d:%02d]" % (title, minutes, sec)
-        except IndexError:
-            return user + ", that video isn't available or doesn't exist."""
-
     def recv(self, message, user):
         global cb
         convo_starters = ["hoggy,", "@hoggy", "hoggy:"]
@@ -568,9 +537,7 @@ class Commander(object):
                     sub = sub[1:]
                 return "http://reddit.com/%s" % sub
             
-            #our youtube lookups, short and long have different formats
-            website = "http" in message
-            if website:
+            if "http" in message:
                 parts = message.split()
                 for part in parts:
                     if part.startswith('http:') or part.startswith('https:'):                        
