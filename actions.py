@@ -13,7 +13,6 @@ import ConfigParser
 import cleverbot
 
 cb = cleverbot.Session()
-times = 0
 
 config = ConfigParser.RawConfigParser()
 config.read('config.ini')
@@ -521,12 +520,11 @@ class Commander(object):
             return user + ", that video isn't available or doesn't exist."""
 
     def recv(self, message, user):
-        global cb, times
+        global cb
         convo_starters = ["hoggy,", "@hoggy", "hoggy:"]
         for s in convo_starters:
             if message.startswith(s):
                 print("Asking %s" % message.replace(s, '').strip())
-                times += 1
                 return cb.Ask(message.replace(s, '').strip())
         if message.startswith('!'):
             # Awww snap, it's a hoggy action
