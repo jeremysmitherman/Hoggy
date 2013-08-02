@@ -32,7 +32,16 @@ times = Table('times', metadata,
     Column('name', String(20), primary_key=True),
     Column('time', Float)
 )
+feeds = Table('feeds', metadata, 
+    Column('id', Integer, primary_key=True),
+    Column('url', String(200))
+)
+seen_feeds = Table('seen_feeds', metadata,
+    Column('story_url',primary_key=True),
+    Column('feed_id', Integer, Foreign_key("feeds.id"))
+)
 if __name__ == '__main__':
     quotes.create()
     times.create()
+    feeds.create()
     print "Database setup completed successfully."

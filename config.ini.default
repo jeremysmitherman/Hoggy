@@ -10,6 +10,7 @@ port=6667
 nick=
 channels=##hoggit
 log=irc.log
+admins=pole`,jers
 
 [hoggy]
 logfile=hoggy.log

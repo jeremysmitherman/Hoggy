@@ -2,3 +2,4 @@ twisted
 sqlalchemy
 beautifulsoup
 requests
+feedparser 
