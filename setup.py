@@ -37,11 +37,11 @@ feeds = Table('feeds', metadata,
     Column('url', String(200))
 )
 seen_feeds = Table('seen_feeds', metadata,
-    Column('story_url',primary_key=True),
-    Column('feed_id', Integer, Foreign_key("feeds.id"))
+    Column('story_url',String(200), primary_key=True)
 )
 if __name__ == '__main__':
     quotes.create()
     times.create()
     feeds.create()
+    seen_feeds.create()
     print "Database setup completed successfully."
