@@ -6,6 +6,8 @@ from setup import feeds, seen_feeds
 import datetime
 from os import sys
 
+feedparser.USER_AGENT = "RSS Feedparser for HoggyBot by /u/acidictadpole for /r/hoggit"
+
 class FeedReader(threading.Thread):
 
 	def __init__(self, in_queue, out_queue):
