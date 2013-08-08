@@ -39,9 +39,16 @@ feeds = Table('feeds', metadata,
 seen_feeds = Table('seen_feeds', metadata,
     Column('story_url',String(200), primary_key=True)
 )
+
+def _create_tables(tables):
+    for table in tables:
+        try:
+            table.create()
+            print "Created %s" % table
+        except:
+            # Probably already made
+            pass
+
 if __name__ == '__main__':
-    quotes.create()
-    times.create()
-    feeds.create()
-    seen_feeds.create()
+    _create_tables(quotes, times, feeds, seen_feeds)
     print "Database setup completed successfully."
