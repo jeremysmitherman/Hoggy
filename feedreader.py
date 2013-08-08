@@ -70,7 +70,7 @@ class FeedReaderManager(threading.Thread):
 	
 	def __init__(self, client,channel):
 		self.config = ConfigParser.RawConfigParser()
-		self.config.read('config.ini')
+		self.config.read(sys.argv[1])
 		minutes = self.config.get('RSS','frequency')
 		self.frequency = datetime.timedelta(minutes=float(minutes))
 		self.max_thread_number = self.config.get('RSS','max_threads')
