@@ -58,7 +58,7 @@ class FeedChecker(threading.Thread):
 					return
 			#If it's not in the db, add it and spew it to channel.
 			message = "%s: %s - %s" % (article["feed"],article["title"],article["url"])
-			message = message.encode('ascii','replace')
+			message = message.encode('ascii', 'ignore')
 			self.client.msg(self.channel, message)
 			self.add_feed_to_seen(article['url'])
 
