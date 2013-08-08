@@ -1,4 +1,4 @@
-from setup import quotes, times, engine
+from setup import quotes, times, engine, feeds
 from random import choice
 import re, sys
 import random
@@ -11,6 +11,7 @@ from sidebar import template
 from time import gmtime
 import ConfigParser
 import cleverbot
+import feedparser
 
 cb = cleverbot.Session()
 
@@ -461,6 +462,30 @@ class print_help(command):
 
             return "{0}: {1}".format(searchcls, comclass.longdesc)
 
+class add_feed(command):
+    shortdesc="Add an rss feed to monitor"
+    longdesc="Add an rss feed to monitor"
+
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        argc = len(args)
+        if argc != 1:
+            return "!help"
+        feedurl = args[0]
+        feed = feedparser.parse(feedurl)
+        try:
+            title = feed["channel"]["title"]
+            addr = cls()
+            addr.add_feed(feedurl)
+            return "Added {0}".format(title)
+        except KeyError:
+            return "I don't think that's an rss feed"
+
+    def add_feed(self,url):
+        q = feeds.insert()
+        q.execute(url=url)
+
+
 class Commander(object):
     actions = {
         '!hoggy':hoggy,
@@ -482,6 +507,7 @@ class Commander(object):
         '!when': when,
         '!settime':settime,
         '!ud': urbandictionary,
+        '!rssadd':add_feed,
         '!ping':ping
     }
 
