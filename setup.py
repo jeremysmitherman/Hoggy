@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer,String, Float
-import os
+import os, sys
 import ConfigParser
 
 try:
     config = ConfigParser.RawConfigParser()
-    config.read('config.ini')
+    config.read(sys.argv[1])
 except ConfigParser.NoSectionError:
     print "Config file is un-readable or not present.  Make sure you've created a config.ini (see config.ini.default for an example)"
     exit()

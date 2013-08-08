@@ -1,6 +1,6 @@
 from setup import quotes, times, engine
 from random import choice
-import re
+import re, sys
 import random
 import requests
 import time
@@ -15,7 +15,7 @@ import cleverbot
 cb = cleverbot.Session()
 
 config = ConfigParser.RawConfigParser()
-config.read('config.ini')
+config.read(sys.argv[1])
 
 class ActionException(Exception):
     def __init__(self, message):
