@@ -4,10 +4,10 @@ import json
 import pickle
 import logging
 import time
-import ConfigParser
+import ConfigParser,sys
 
 config = ConfigParser.RawConfigParser()
-config.read('config.ini')
+config.read(sys.argv[1])
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
