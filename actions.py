@@ -1,6 +1,6 @@
 from setup import quotes, times, engine, feeds
 from random import choice
-import re, sys
+import re, sys, threading, socket
 import random
 import requests
 import time
@@ -485,6 +485,50 @@ class add_feed(command):
         q = feeds.insert()
         q.execute(url=url)
 
+class server(command):
+    shortdesc="Check if the server is running"
+    shortdesc="Check if the dedicated server is running"
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        client = kwargs['client']
+        ct = _checker_thread(client, "#hoggit")
+
+        ct.start()
+
+
+class _checker_thread(threading.Thread):
+    def __init__(self, client, channel):
+        threading.Thread.__init__(self)
+        self.daemon = True
+        self.channel = channel
+        self.client = client
+        self.down_messages = [
+            "HOGGIT DEDICATED IS NOT RESPONDING. SOMEONE REPLACE THE HAMSTERS AND REMEMBER TO FEED THEM THIS TIME.",
+            "HOGGIT DEDICATED IS DOWN.  !BLAME HOOZIN",
+            "HOGGIT DEDICATED IS DOWN.  ENSURE THE CAPACITORS STILL CONTAIN THEIR SMOKE.",
+            "Hoggit dedicated is up.  JK YOU DUMB FUCK IT'S DOWN FIXITFIXITFIXITFIXIT"
+        ]
+
+        self.up_messages = [
+            "HOGGIT DEDICATED IS NOT RESPONDING. j/k it's up.  Jers sure knows what he's doing.",
+            "Hoggit Dedicated is up,  Jers sure is doing a swell job.",
+            "Hoggit Dedicated is up.  What a testament to the skill and dedication of our beloved leader Jers.",
+            "Hoggit dedicated is up.  Donations to my Mexico beach trip fund... er, I mean to keep this fucker supplied with electricity appreciated."
+        ]
+
+    def run(self):
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(float(config.get('health_check', 'timeout')) )
+            try:
+                s.connect((config.get('health_check', 'hostname'), int(config.get('health_check', 'port')) ))
+                self.client.msg(self.channel,choice(self.up_messages))
+            except socket.timeout:
+                self.client.msg(self.channel, choice(self.down_messages))
+            finally:
+                s.close()
+        except:
+            sys.exit(0)
 
 class Commander(object):
     actions = {
@@ -508,7 +552,8 @@ class Commander(object):
         '!settime':settime,
         '!ud': urbandictionary,
         '!rssadd':add_feed,
-        '!ping':ping
+        '!ping':ping,
+        '!server': server
     }
 
     def __init__(self, client):
