@@ -5,7 +5,7 @@ logile=redditthread.log
 subreddit=
 
 [irc]
-host=irc.4chan
+host=irc.4chan.net
 port=6667
 nick=
 channels=##hoggit
