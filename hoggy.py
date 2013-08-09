@@ -78,9 +78,6 @@ class HoggyBot(irc.IRCClient):
         """This will get called when the bot joins the channel."""
         self.logger.log("[I have joined %s]" % channel)
         self.msg(channel, "I have arrived!")
-        self.reddit_update = redditupdate.RedditUpdateThread(self, channel)
-        self.reddit_update.parse_threads(self.reddit_update.request_threads(),False)
-        self.reddit_update.start()
         self.feedreader = feedreader.FeedReaderManager(self, channel)
         print "starting feedreader"
         self.feedreader.begin()

@@ -21,7 +21,7 @@ class Grabber(object):
         if len(quote_lines):
             quote = ""
             quote_lines.reverse()
-            quote += "\\ ".join(quote_lines)
+            quote += " ".join(quote_lines)
             quote += " --" + user
             return quote
         else:

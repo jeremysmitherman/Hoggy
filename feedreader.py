@@ -6,6 +6,8 @@ from setup import feeds, seen_feeds
 import datetime
 from os import sys
 
+feedparser.USER_AGENT = "RSS Feedparser for HoggyBot by /u/acidictadpole for /r/hoggit"
+
 class FeedReader(threading.Thread):
 
 	def __init__(self, in_queue, out_queue):
@@ -60,7 +62,7 @@ class FeedChecker(threading.Thread):
 					return
 			#If it's not in the db, add it and spew it to channel.
 			message = "%s: %s - %s" % (article["feed"],article["title"],article["url"])
-			message = message.encode('ascii','replace')
+			message = message.encode('ascii', 'ignore')
 			self.client.msg(self.channel, message)
 			self.add_feed_to_seen(article['url'])
 
@@ -72,7 +74,7 @@ class FeedReaderManager(threading.Thread):
 	
 	def __init__(self, client,channel):
 		self.config = ConfigParser.RawConfigParser()
-		self.config.read('config.ini')
+		self.config.read(sys.argv[1])
 		minutes = self.config.get('RSS','frequency')
 		self.frequency = datetime.timedelta(minutes=float(minutes))
 		self.max_thread_number = self.config.get('RSS','max_threads')
