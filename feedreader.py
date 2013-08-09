@@ -15,7 +15,7 @@ class FeedReader(threading.Thread):
 		self.out_queue = out_queue
 		self.stop = False
 		threading.Thread.__init__(self)
-		self.setDaemon(True)
+		self.daemon = True
 
 	#Will return a list of any new entries in the given feed.
 	def run(self):
@@ -24,8 +24,11 @@ class FeedReader(threading.Thread):
 			url = self.get_url() #Blocking until available on in_queue
 			feed = feedparser.parse(url)
 			for item in feed["items"]:
-				entry = {"feed":feed["channel"]["title"],"title":item["title"], "url":item["link"]}
-				entries.append(entry)
+				try:
+					entry = {"feed":feed["channel"]["title"],"title":item["title"], "url":item["link"]}
+					entries.append(entry)
+				except:
+					pass
 
 			self.out_queue.put(entries)
 
@@ -49,10 +52,13 @@ class FeedChecker(threading.Thread):
 		self.feed = feed
 		self.channel = channel
 		threading.Thread.__init__(self)
-		self.setDaemon(True)
+		self.daemon = True
 
 	def run(self):
-		self.check_seen(self.feed)
+		try:
+		    self.check_seen(self.feed)
+		except:
+			pass
 
 	def check_seen(self,feed):
 		rs = seen_feeds.select().execute().fetchall()
@@ -84,6 +90,7 @@ class FeedReaderManager(threading.Thread):
 		self.channel = channel
 		self.threads = []
 		threading.Thread.__init__(self)
+		self.daemon = True
 
 	def begin(self):
 		#Create the threads
@@ -120,7 +127,7 @@ class FeedReaderManager(threading.Thread):
 					break
 				except KeyboardInterrupt:
 					self.clean_threads()
-					sys.exit(0)
+					raise
 				except ValueError:
 					break
 

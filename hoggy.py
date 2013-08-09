@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, MetaData
 from setup import engine, metadata
 import redditupdate
 import feedreader
+import server_checker
 
 import time#, sys, random
 import os
@@ -79,9 +80,13 @@ class HoggyBot(irc.IRCClient):
         self.logger.log("[I have joined %s]" % channel)
         self.msg(channel, "I have arrived!")
         self.feedreader = feedreader.FeedReaderManager(self, channel)
-        print "starting feedreader"
+        self.logger.log("starting feedreader")
         self.feedreader.begin()
         self.feedreader.start()
+
+        log.info("Starting servercheck")
+        self.servercheck = server_checker.ServerChecker(self, channel)
+        self.servercheck.start()
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""

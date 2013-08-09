@@ -12,6 +12,15 @@ channels=##hoggit
 log=irc.log
 admins=pole`,jers
 
+[RSS]
+frequency=1
+max_threads = 1
+
+[health_check]
+hostname = dcs.hoggit.us
+port = 10308
+timeout = 5
+
 [hoggy]
 logfile=hoggy.log
 
