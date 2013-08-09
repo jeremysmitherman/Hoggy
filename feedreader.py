@@ -13,6 +13,7 @@ class FeedReader(threading.Thread):
 		self.out_queue = out_queue
 		self.stop = False
 		threading.Thread.__init__(self)
+		self.setDaemon(True)
 
 	#Will return a list of any new entries in the given feed.
 	def run(self):
@@ -46,6 +47,7 @@ class FeedChecker(threading.Thread):
 		self.feed = feed
 		self.channel = channel
 		threading.Thread.__init__(self)
+		self.setDaemon(True)
 
 	def run(self):
 		self.check_seen(self.feed)
@@ -117,6 +119,8 @@ class FeedReaderManager(threading.Thread):
 				except KeyboardInterrupt:
 					self.clean_threads()
 					sys.exit(0)
+				except ValueError:
+					break
 
 	def clean_threads(self):
 		for thread in self.threads:
