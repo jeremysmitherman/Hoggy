@@ -51,7 +51,7 @@ class ServerChecker(threading.Thread):
                 finally:
                     s.close()
 
-                if self.stop_event.wait(30):
+                if self.stop_event.wait(60 * 20):
                     self.is_stopping = True
         except Exception, ex:
             log.debug(ex)
