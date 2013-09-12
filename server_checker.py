@@ -29,7 +29,7 @@ class ServerChecker(threading.Thread):
         self.channel = channel
         self.down_messages = [
             "HOGGIT DEDICATED IS NOT RESPONDING. SOMEONE REPLACE THE HAMSTERS AND REMEMBER TO FEED THEM THIS TIME.",
-            "HOGGIT DEDICATED IS DOWN.  !BLAME HOOZIN",
+            "HOGGIT DEDICATED IS DOWN.  !BLAME JERS / ZELLY",
             "HOGGIT DEDICATED IS DOWN.  ENSURE THE CAPACITORS STILL CONTAIN THEIR SMOKE.",
             "Hoggit dedicated is up.  JK YOU DUMB FUCK IT'S DOWN FIXITFIXITFIXITFIXIT"
         ]
