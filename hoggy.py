@@ -52,6 +52,7 @@ class MessageLogger:
 class HoggyBot(irc.IRCClient):
     """A logging IRC bot."""
     nickname = config.get('irc', 'nick')
+    lineRate = 1
 
     def __init__(self, *args, **kwargs):
         self.commander = actions.Commander(self)
