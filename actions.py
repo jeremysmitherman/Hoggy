@@ -220,19 +220,7 @@ class hoggy(command):
             else:
                 return "No quote with id: %s" %quoteId
         elif args[0] == 'search':
-            try:
-                search_string = str(args[1])
-                if (len(search_string) < 3):
-                    return "Minimum search requires 3 letters"
-            except:
-                return "Your search string hoozed it up"
-            
-            results = hog.search(search_string)
-            return_string = ""
-            for result in results:
-                return_string += "#%d: \"%s\"\n" % (result[0], result[1])   
-              
-            kwargs['client'].msg(kwargs['user'],return_string.encode('ascii','replace'))
+            return "http://hoggit.us:8080/?search=%s" % " ".join args[1:]
         elif args[0] == 'count':
             number = hog.count()
             return "There are currently {0} hoggyisms stored!".format(number)
