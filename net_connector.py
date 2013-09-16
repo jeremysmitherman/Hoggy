@@ -1,4 +1,4 @@
-import cherrypy, ConfigParser, sys, logging
+import cherrypy, ConfigParser, sys, logging, os
 from setup import quotes, times, engine, feeds
 from jinja2 import Environment, FileSystemLoader
 
