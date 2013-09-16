@@ -25,8 +25,11 @@ log.addHandler(sh)
 log.addHandler(fh)
 
 class quoteSearch(object):
-    def index(self, search):
-        q = quotes.select().order_by('id').where('body LIKE "%{0}%"'.format(search))
+    def index(self, search = None):
+        if search:
+            q = quotes.select().order_by('id').where('body LIKE "%{0}%"'.format(search))
+        else:
+            q = quotes.select().order_by('id')
         rs = q.execute()
         rows = rs.fetchall()
         
