@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>Hoggy Search</title>
+    </head>
+
+    <body>
+        <style>
+            td {
+                text-align:left;
+            }
+
+            th {
+                text-align:left;
+            }
+        </style>
+        <table>
+            <th>ID</th>
+            <th>Body</th>
+            {% for row in results %}
+                <tr>
+                    <td style='width:100px;'>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>
