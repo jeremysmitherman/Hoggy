@@ -18,7 +18,7 @@ template = """
 
 **[Hoggit IRC on Freenode](http://webchat.freenode.net?channels=hoggit)**
 
-**[Download the latest version (2.4) of the training map here!](https://www.dropbox.com/s/qdkqyfnzmkegtpx/Hoggit%20Tuesday%20Night%20Noob%21%202.4%20%28HFW%20skins%29.miz?m)**
+**[Download the latest version of the training map here!](https://www.dropbox.com/sh/x4sn2r1ww25qtw6/8BsiOx-fdH)**
 
 **The spam filter here is insane,  so please use the mod message to get us to help you out if your post doesn't show up in "new"**
 
@@ -28,7 +28,9 @@ Here's some more info to get you started:
 
 *  If you want to get a flight going, post it up here and see who's interested. In general, lets try to make our severs named as such so we can find each other in the server browser easily:
 
-    **Hoggit-&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;your username&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt;**
+    **Hoggit-<your username>**
+
+    ** The dedicated sever will always have /r/hoggit and dedicated somewhere in the name.
 
 Our standard password is **hoggit1fw**. Just something to keep randoms out and from destroying everything in sight.
 
@@ -46,6 +48,6 @@ Our standard password is **hoggit1fw**. Just something to keep randoms out and f
 
 * [/r/flightsim](http://www.reddit.com/r/flightsim) - Flight Sim goodness across the entire spectrum of aviation.
 
-* [/r/ClearBackblast](http://www.reddit.com/r/clearbackblast) - ArmA realism at its best.  A gaming community and blog primarily centered around the game Arma II, with the ACE &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp; ACRE mods. They play large-scale cooperative games.
+* [/r/ClearBackblast](http://www.reddit.com/r/clearbackblast) - ArmA realism at its best.  A gaming community and blog primarily centered around the game Arma II, with the ACE & ACRE mods. They play large-scale cooperative games.
 
 * [/r/ProjectAwesome](http://www.reddit.com/r/ProjectAwesome) - Reddit Multiplayer MilSim. Infantry, Armor, Air, all rolled into one package across a variety of games."""
