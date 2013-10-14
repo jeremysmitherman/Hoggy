@@ -601,5 +601,8 @@ class Commander(object):
                 for part in parts:
                     if part.startswith('http:') or part.startswith('https:'):                        
                         soup = BeautifulSoup.BeautifulSoup(urllib.urlopen(part))
-                        return "Title: {0}".format(soup.title.string.encode('ascii', 'ignore'))
+                        try:
+                            return "Title: {0}".format(soup.title.string.encode('ascii', 'ignore'))
+			except:
+                            pass
 
