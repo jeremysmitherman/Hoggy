@@ -4,10 +4,8 @@ from grabber import Grabber
 from sqlalchemy import create_engine, MetaData
 from setup import engine, metadata
 import redditupdate
-#import feedreader
-import server_checker
 
-import time#, sys, random
+import time
 import os
 import ConfigParser
 import logging
@@ -35,23 +33,11 @@ except ConfigParser.NoSectionError:
     print "Config file is un-readable or not present.  Make sure you've created a config.ini (see config.ini.default for an example)"
     exit()
 
-class MessageLogger:
-    def __init__(self, logFile):
-        self.logFile = logFile
-
-    def log(self, message):
-        """Write a message to the logFile."""
-        timestamp = time.strftime("[%H:%M:%S]", time.localtime(time.time()))
-        self.logFile.write('%s %s\n' % (timestamp, message))
-        self.logFile.flush()
-
-    def close(self):
-        self.logFile.close()
-
 
 class HoggyBot(irc.IRCClient):
     """A logging IRC bot."""
     nickname = config.get('irc', 'nick')
+    password = config.get('irc', 'password')
     lineRate = 1
 
     def __init__(self, *args, **kwargs):
@@ -61,10 +47,7 @@ class HoggyBot(irc.IRCClient):
     # callbacks for events
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
-        self.logger = MessageLogger(open(self.factory.filename, "a"))
-        self.logger.log("[connected at %s]" %
-                        time.asctime(time.localtime(time.time())))
-
+        
     def connectionLost(self, reason):
         irc.IRCClient.connectionLost(self, reason)
         self.logger.log("[disconnected at %s]" %
@@ -78,19 +61,10 @@ class HoggyBot(irc.IRCClient):
 
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
-        self.logger.log("[I have joined %s]" % channel)
         self.msg(channel, "I have arrived!")
         self.reddit_update = redditupdate.RedditUpdateThread(self, channel)
         self.reddit_update.parse_threads(self.reddit_update.request_threads(),False)
         self.reddit_update.start()
-        #self.feedreader = feedreader.FeedReaderManager(self, channel)
-        #self.logger.log("starting feedreader")
-        #self.feedreader.begin()
-        #self.feedreader.start()
-
-        log.info("Starting servercheck")
-        self.servercheck = server_checker.ServerChecker(self, channel)
-        self.servercheck.start()
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
@@ -111,20 +85,6 @@ class HoggyBot(irc.IRCClient):
             else:
                 self.msg(channel, message)
 
-    #def action(self, user, channel, msg):
-    #    """This will get called when the bot sees someone do an action."""
-    #    user = user.split('!', 1)[0]
-    #    self.logger.log("* %s %s" % (user, msg))
-
-    # irc callbacks
-
-    def irc_NICK(self, prefix, params):
-        """Called when an IRC user changes their nickname."""
-        old_nick = prefix.split('!')[0]
-        new_nick = params[0]
-        self.logger.log("%s is now known as %s" % (old_nick, new_nick))
-
-
     # For fun, override the method that determines how a nickname is changed on
     # collisions. The default method appends an underscore.
     def alterCollidedNick(self, nickname):
@@ -133,8 +93,6 @@ class HoggyBot(irc.IRCClient):
         effort to create an unused related name for subsequent registration.
         """
         return nickname + '^'
-
-
 
 class HoggyBotFactory(protocol.ClientFactory):
     """A factory for HoggyBots.
