@@ -535,7 +535,6 @@ class Commander(object):
         '!thanks' : thanks,
         '!ron': ron,
         '!bolt': lightning,
-        '!new': new,
         '!when': when,
         '!settime':settime,
         '!ud': urbandictionary,
