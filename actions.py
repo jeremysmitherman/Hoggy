@@ -467,7 +467,6 @@ class Commander(object):
         '!when': when,
         '!settime':settime,
         '!ud': urbandictionary,
-        '!rssadd':add_feed,
         '!ping':ping
     }
 
