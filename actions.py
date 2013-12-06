@@ -10,10 +10,6 @@ import praw
 from sidebar import template
 from time import gmtime
 import ConfigParser
-import cleverbot
-import feedparser
-
-cb = cleverbot.Session()
 
 config = ConfigParser.RawConfigParser()
 config.read(sys.argv[1])
@@ -450,74 +446,6 @@ class print_help(command):
 
             return "{0}: {1}".format(searchcls, comclass.longdesc)
 
-class add_feed(command):
-    shortdesc="Add an rss feed to monitor"
-    longdesc="Add an rss feed to monitor"
-
-    @classmethod
-    def execute(cls, *args, **kwargs):
-        argc = len(args)
-        if argc != 1:
-            return "!help"
-        feedurl = args[0]
-        feed = feedparser.parse(feedurl)
-        try:
-            title = feed["channel"]["title"]
-            addr = cls()
-            addr.add_feed(feedurl)
-            return "Added {0}".format(title)
-        except KeyError:
-            return "I don't think that's an rss feed"
-
-    def add_feed(self,url):
-        q = feeds.insert()
-        q.execute(url=url)
-
-class server(command):
-    shortdesc="Check if the server is running"
-    shortdesc="Check if the dedicated server is running"
-    @classmethod
-    def execute(cls, *args, **kwargs):
-        client = kwargs['client']
-        ct = _checker_thread(client, "#hoggit")
-
-        ct.start()
-
-
-class _checker_thread(threading.Thread):
-    def __init__(self, client, channel):
-        threading.Thread.__init__(self)
-        self.daemon = True
-        self.channel = channel
-        self.client = client
-        self.down_messages = [
-            "HOGGIT DEDICATED IS NOT RESPONDING. SOMEONE REPLACE THE HAMSTERS AND REMEMBER TO FEED THEM THIS TIME.",
-            "HOGGIT DEDICATED IS DOWN.  !BLAME HOOZIN",
-            "HOGGIT DEDICATED IS DOWN.  ENSURE THE CAPACITORS STILL CONTAIN THEIR SMOKE.",
-            "Hoggit dedicated is up.  JK YOU DUMB FUCK IT'S DOWN FIXITFIXITFIXITFIXIT"
-        ]
-
-        self.up_messages = [
-            "HOGGIT DEDICATED IS NOT RESPONDING. j/k it's up.  Jers sure knows what he's doing.",
-            "Hoggit Dedicated is up,  Jers sure is doing a swell job.",
-            "Hoggit Dedicated is up.  What a testament to the skill and dedication of our beloved leader Jers.",
-            "Hoggit dedicated is up.  Donations to my Mexico beach trip fund... er, I mean to keep this fucker supplied with electricity appreciated."
-        ]
-
-    def run(self):
-        try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.settimeout(float(config.get('health_check', 'timeout')) )
-            try:
-                s.connect((config.get('health_check', 'hostname'), int(config.get('health_check', 'port')) ))
-                self.client.msg(self.channel,choice(self.up_messages))
-            except socket.timeout:
-                self.client.msg(self.channel, choice(self.down_messages))
-            finally:
-                s.close()
-        except:
-            sys.exit(0)
-
 class Commander(object):
     actions = {
         '!hoggy':hoggy,
@@ -540,20 +468,13 @@ class Commander(object):
         '!settime':settime,
         '!ud': urbandictionary,
         '!rssadd':add_feed,
-        '!ping':ping,
-        '!server': server
+        '!ping':ping
     }
 
     def __init__(self, client):
         self.client = client
 
     def recv(self, message, user):
-        global cb
-        convo_starters = ["hoggy,", "@hoggy", "hoggy:"]
-        for s in convo_starters:
-            if message.startswith(s):
-                print("Asking %s" % message.replace(s, '').strip())
-                return cb.Ask(message.replace(s, '').strip())
         if message.startswith('!'):
             # Awww snap, it's a hoggy action
             try:
