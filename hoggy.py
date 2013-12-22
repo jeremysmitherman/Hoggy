@@ -38,27 +38,37 @@ class HoggyBot(irc.IRCClient):
     """A logging IRC bot."""
     nickname = config.get('irc', 'nick')
     password = config.get('irc', 'password')
+
     lineRate = 1
 
     def __init__(self, *args, **kwargs):
+        log.debug("Init bot")
         self.commander = actions.Commander(self)
         self.grabber = Grabber()
+        log.debug("Init done")
 
     # callbacks for events
     def connectionMade(self):
+        log.debug("Connected to server")
         irc.IRCClient.connectionMade(self)
         
     def connectionLost(self, reason):
+        log.debug("Lost connection: %s" % reason)
         irc.IRCClient.connectionLost(self, reason)
 
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
+        log.debug("Signed onto server")
         for channel in self.factory.channels:
             self.join(channel)
 
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
         self.msg(channel, "I have arrived!")
+        print "Logged in with %s" % self.nickname
+        if self.password:
+            print "Registering username %s with %s" % (self.nickname, self.password)
+            self.msg('NickServ', 'IDENTIFY %s' % self.password)
         self.reddit_update = redditupdate.RedditUpdateThread(self, channel)
         self.reddit_update.parse_threads(self.reddit_update.request_threads(),False)
         self.reddit_update.start()
@@ -117,10 +127,13 @@ class HoggyBotFactory(protocol.ClientFactory):
 
 if __name__ == '__main__':
     # create factory protocol and application
+    log.debug("Creating bot factory")
     f = HoggyBotFactory(config.get('irc', 'channels'), config.get('irc', 'log'))
 
     # connect factory to this host and port
+    log.debug("Attempting to connect...")
     reactor.connectTCP(config.get('irc', 'host'),config.getint('irc', 'port') , f)
 
     # run bot
+    log.debug("Running bot...")
     reactor.run()

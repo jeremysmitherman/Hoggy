@@ -448,7 +448,7 @@ class print_help(command):
 
 class Commander(object):
     actions = {
-        '!hoggy':hoggy,
+        '!blasto':hoggy,
         '!guns' : guns,
         '!rifle': rifle,
         '!pickle': pickle,
