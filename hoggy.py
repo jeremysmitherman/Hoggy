@@ -37,7 +37,10 @@ except ConfigParser.NoSectionError:
 class HoggyBot(irc.IRCClient):
     """A logging IRC bot."""
     nickname = config.get('irc', 'nick')
-    password = config.get('irc', 'password')
+    try:
+        password = config.get('irc', 'password')
+    except:
+        password = None
     lineRate = 1
 
     def __init__(self, *args, **kwargs):
