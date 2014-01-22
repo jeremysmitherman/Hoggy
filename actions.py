@@ -4,9 +4,10 @@ import re, sys, threading, socket
 import random
 import requests
 import time
-import urllib
+import urllib2
 import BeautifulSoup
 import praw
+import HTMLParser
 from sidebar import template
 from time import gmtime
 import ConfigParser
@@ -518,10 +519,23 @@ class Commander(object):
             if "http" in message:
                 parts = message.split()
                 for part in parts:
-                    if part.startswith('http:') or part.startswith('https:'):                        
-                        soup = BeautifulSoup.BeautifulSoup(urllib.urlopen(part))
+                    if part.startswith('http:') or part.startswith('https:'):
+                        html_parser = HTMLParser.HTMLParser()
+                        head = {
+                            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.76 Safari/537.36",
+                            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                            "Accept-Language": "en-US,en;q=0.8",
+                            "Cache-Control": "max-age=0",
+                            "Connection": "keep-alive"
+                        }
+                        req = urllib2.Request(part, headers=head)
+                        soup = BeautifulSoup.BeautifulSoup(urllib2.urlopen(req))
+                        title = html_parser.unescape(soup.title.string)
+                        title = title.replace("\n","").replace("\r","").strip()
+                        title = ' '.join(title.split())
+                        title = title.encode("utf-8","ignore")
                         try:
-                            return "Title: {0}".format(soup.title.string.encode('ascii', 'ignore'))
+                            return "Title: {0}".format(title)
 			except:
                             pass
 
