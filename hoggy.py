@@ -53,9 +53,6 @@ class HoggyBot(irc.IRCClient):
         
     def connectionLost(self, reason):
         irc.IRCClient.connectionLost(self, reason)
-        self.logger.log("[disconnected at %s]" %
-                        time.asctime(time.localtime(time.time())))
-        self.logger.close()
 
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
