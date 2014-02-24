@@ -502,19 +502,12 @@ class Commander(object):
             except Exception, ex:
                 return "Hoozin'ed it up: unexpected exception: {0}".format(str(ex))
         else:
-            if  ' r/' in message or '/r/' in message:
-                obj = re.search(r'[/]?r/[^\s\n]*',message)
-                sub = obj.group()
-                if sub.startswith('/'):
-                    sub = sub[1:]
-                return "http://reddit.com/%s" % sub
-
-            if  ' u/' in message or '/u/' in message:
-                obj = re.search(r'[/]?u/[^\s\n]*',message)
-                sub = obj.group()
-                if sub.startswith('/'):
-                    sub = sub[1:]
-                return "http://reddit.com/%s" % sub
+            matches = re.findall("(^|\s)/?((r|u)/[a-zA-Z0-9_]+)",message)
+            if len(matches) > 0:
+                links = ""
+                for match in matches:
+                    links += "http://reddit.com/%s " % match[1]
+                return links
             
             if "http" in message:
                 parts = message.split()
