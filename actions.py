@@ -194,6 +194,8 @@ class hoggy(command):
         elif argc == 1:
             try:
                 quoteId = int(args[0])
+                if quoteId == 1000:
+                    return "I'm really sorry, %s.  I really wanted to make a wonderful 1000 GET for you, but %s ruined it for everyone." % (kwargs['user'], choice(['Iron', "Hoozin","Jers"]))
                 row = hog.get_by_id(quoteId)
                 return '%s (#%d)' % (str(row['body']), row['id'])
             except:
