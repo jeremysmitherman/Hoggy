@@ -1,5 +1,7 @@
-from setup import quotes, times, engine, feeds
+from setup import quotes, times, engine, feeds, learn
 from random import choice
+from UserString import MutableString
+import subprocess
 import re, sys, threading, socket
 import random
 import requests
@@ -7,6 +9,7 @@ import time
 import urllib
 import BeautifulSoup
 import praw
+import time
 from sidebar import template
 from time import gmtime
 import ConfigParser
@@ -38,7 +41,7 @@ class when(command):
         low = target.lower()
         if low == "hoggy":
             return "I am beyond both time and space, mortal"
-        
+
         time =  times.select().where(times.c.name==low).execute().fetchone()
         if not time:
             return "They don't appear to have set a time yet, sorry"
@@ -51,12 +54,12 @@ def get_adjusted_time(adjustment):
 
 class settime(command):
     shortdesc = "Set your timezone"
-    wanted = "!settime [UTC|GMT][+|-]hours" 
+    wanted = "!settime [UTC|GMT][+|-]hours"
     longdesc = format
     @classmethod
     def execute(cls, time = None, user = None, client = None):
         if not time or not user:
-            return 
+            return
         reg = re.compile("^(ZULU|GMT|UTC)(\+|-)[0-9]{1,2}[:|\.]{0,1}[0-9]{0,2}$")
         if not reg.match(time):
             return "Hey, try the format: {0}".format(settime.wanted)
@@ -95,7 +98,7 @@ class urbandictionary(command):
 class new(command):
     shortdesc = "Update the subreddit header with something extremely thought-provoking or insightful."
     longdesc = "Now with added sidebar garbling!"
-    
+
     @classmethod
     def execute(cls, *args, **kwargs):
         if args[0] == '!hoggy':
@@ -105,14 +108,14 @@ class new(command):
                 return "Usage: !new hoggy 15"
         else:
             header =  " ".join(args).replace("=","\=")
-        
+
         manager = praw.Reddit("HoggyBot for /r/hoggit by /u/zellyman")
         manager.login(config.get('reddit', 'username'), config.get('reddit', 'password'))
         subreddit = manager.get_subreddit(config.get('reddit', 'subreddit'))
         settings = subreddit.get_settings()
         new_desc = "### %s \n=\n\n" % header
         new_desc += template
-        
+
         subreddit.set_settings("Hoggit Fighter Wing", description=new_desc)
 
         return "Header updated."
@@ -127,7 +130,7 @@ class lightning(command):
 class no(command):
     longdesc = "For use in dire situations only."
     shortdesc = "For dire situations."
-    
+
     @classmethod
     def execute(cls, *args, **kwargs):
         return "http://nooooooooooooooo.com/"
@@ -165,7 +168,7 @@ class hoggy(command):
         rs = q.execute()
         row = rs.fetchone()
         return row
-    
+
     def search(self, message):
         q = quotes.select().order_by('id').where('body LIKE "%{0}%"'.format(message))
         rs = q.execute()
@@ -182,7 +185,7 @@ class hoggy(command):
         q = quotes.delete().where("id={0}".format(str(quoteId)))
         q.execute()
     def count(self): return quotes.count()
-        
+
     @classmethod
     def execute(cls, *args, **kwargs):
         hog = cls()
@@ -248,7 +251,7 @@ class grab(command):
 
         quote = kwargs['client'].grabber.grab(args[0], num_lines)
         return hoggy.execute('add', quote)
-    
+
 
 class eject(command):
     shortdesc = "Get the hell out of Dodge!"
@@ -275,7 +278,7 @@ class guns(command):
                 message += "%s pulverized %s with great vengeance and furious anger" % (user, target)
             elif random.randint(0,100) > 60:
                 message += "%s screwed up their attack run, but managed to pull out." % (user)
-            else: 
+            else:
                 message += "%s ignored the VMU's 'PULL UP' and smashed into %s" % (user, target)
                 client.kick('hoggit', user, 'Is no more.')
         except Exception, ex:
@@ -287,7 +290,7 @@ class guns(command):
 class thanks(command):
     shortdesc = "For polite people only"
     longdesc = "Like this ever gets any use"
-    
+
     @classmethod
     def execute(cls, target = None, user = None, client=None):
         if target is not None:
@@ -319,7 +322,7 @@ class rifle(command):
 class pickle(command):
     shortdesc = "Drop the bombs of peace onto the target of desperation"
     longdesc = "Like this will ever hit anything"
-    
+
     @classmethod
     def execute(cls, target = None, user = None, client = None):
         if target is None:
@@ -356,7 +359,7 @@ class pickle(command):
 class wire(command):
     shortdesc = "Accurately simulates a Vikhir missile"
     longdesc = "Good luck hitting anything"
-    
+
     @classmethod
     def execute(cls, target = None, user = None, client = None):
         if target is None:
@@ -368,7 +371,7 @@ class wire(command):
             messages = [
                 "manages to fire a Vikhir at themself. Lasers aren't for pointing into cockpits. Doesn't mattter much though, it still missed."
             ]
-            return "%s %s" % (user, choice(messages)) 
+            return "%s %s" % (user, choice(messages))
         else:
             messages = [
                 "but they crashed for no good reason",
@@ -387,7 +390,7 @@ class wire(command):
 class ron(command):
     shortdesc = "Why the fuck would you use this command? It's a complete waste of time."
     longdesc = "Kill yourself"
-    
+
     @classmethod
     def execute(cls, target = None, user = None, client = None):
         if target is not None:
@@ -404,15 +407,15 @@ class ron(command):
                 "Ron doesn\'t miss you, fuck you.",
                 "Ron\'s a fucking piranha in this pool",
                 "What\'s up, faggots? --Ron"
-            ]  
+            ]
             return "%s" % (choice(messages))
-                
-             
+
+
 
 class hug(command):
     shortdesc = "Hoggit is not responsible for any rape allegations that may arise from using this command"
     longdesc = "It makes me cringe when I think about it"
-    
+
     @classmethod
     def execute(cls, target = None, user = None, client = None):
         if target is None:
@@ -421,11 +424,11 @@ class hug(command):
             return "Hugging yourself? Keep it clean!"
         else:
             return "%s gives %s a lingering hug. %s likes it. Likes it a lot...\nThey continue their embrace, %s gently stroking %s's face, and %s leans in for a kiss." % (user, target, target, target, user, user)
-            
+
 class print_help(command):
     shortdesc = "Cause a infinite loop by reading the help out again"
     longdesc = "This isn't good for the environment you know"
-    
+
     @classmethod
     def execute(cls, *args, **kwargs):
         argc = len(args)
@@ -448,6 +451,120 @@ class print_help(command):
 
             return "{0}: {1}".format(searchcls, comclass.longdesc)
 
+class roll(command):
+    shortdesc ="Roll them bones"
+    longdesc = "Randomly generates some numbers given input in the format of <number of dice>d<number of sides> ie: 1d20 will roll a single 20 sided die. Maximum 10 dice and 100 sides"
+
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        if len(args) != 1:
+            return Commander.insult(kwargs['user'])
+        try:
+            darray = args[0].split("d")
+            numdice = int(float(darray[0]))
+            numsides = int(float(darray[1]))
+            if numdice <= 0 or numdice > 10 or numsides <= 0 or numsides > 100 or (float(darray[0]) != int(darray[0])) or (float(darray[1]) != int(darray[1])) :
+                return Commander.insult(kwargs['user'])
+
+            dice = []
+            total = 0
+            for i in range(numdice):
+                die = random.randint(1, numsides)
+                dice.append(die)
+                total += die
+            if numdice > 1:
+                return 'Go! Dice Roll! ' + ', '.join([str(x) for x in dice]) + ' (' + str(total) + ')'
+            else:
+                return ' '.join([str(x) for x in dice])
+        except:
+            return Commander.insult(kwargs['user'])
+
+
+
+class choose(command):
+    shortdesc = "Chooses something"
+    longdesc = "Picks a random string given input in the format <string> or <string> or <string>.... etc."
+
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        if len(args) == 0:
+            return Commander.insult(kwargs['user'])
+
+        temp = ' '.join([str(x) for x in args])
+        return "Hmm, let's go with {0}".format(choice(temp.split("or")).strip())
+
+class fortune(command):
+    shortdesc = "CRYPTIC METAPHOR*"
+    longdesc = "You can try !fortune long for a longer fortune too!"
+
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        if len(args) == 1 and args[0] == "long" :
+            temp = MutableString()
+            for line in subprocess.check_output(["fortune", "-l"]).split("\n"):
+                temp += str(line)
+                temp += ' '
+            kwargs['client'].msg(kwargs['user'], temp)
+        else :
+            temp = MutableString()
+            for line in subprocess.check_output("fortune").split("\n"):
+                temp += str(line)
+                temp += ' '
+            return temp;
+
+class what(command):
+    shortdesc = "Gets what something is"
+    longdesc = "Accepts !what <something> and !what is <something>"
+
+    def get_learn(self, key):
+        l = learn.select().where(learn.c.key==key)
+        le = l.execute();
+        rs = le.fetchall();
+
+        if len(rs) == 0 :
+            return "I don't know nothin"
+        output = key + " is: "
+        count = 1
+        for row in rs:
+            output += str(row[2]) + " (" + str(count) + "), "
+            count += 1
+            if count == 10 :
+              output += "and more ..."
+              return output
+
+        return output[:-2]
+
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        if len(args) != 1 and len(args) != 2:
+            return Commander.insult(kwargs['user'])
+        elif len(args) == 2 and args[0] == "is":
+            return cls().get_learn(args[1])
+        else:
+            return cls().get_learn(args[0])
+
+class learncom(command):
+    shortdesc = "I want to learn something!"
+    longdesc = "Input is accepted as <something> is <something>: ie Hoozin is somebody with no self esteem"
+
+
+    def add_learn(self, lkey, lrelation, ladd):
+        l = learn.insert()
+        l.execute(key = lkey, relation = lrelation, added = ladd)
+
+    @classmethod
+    def execute(cls, *args, **kwargs):
+        if len(args) == 0:
+            return Commander.insult(kwargs['user'])
+
+        temp = ' '.join([str(x) for x in args])
+        temp = temp.split('is')
+        if len(temp) != 2:
+            return Commander.insult(kwargs['user'])
+
+        cls().add_learn(temp[0], temp[1], kwargs['user'])
+        return choice(["Sure thing, pal", "Okay, why not?", "Yeah I don't mind", "I'll write that one down", "Roger, {0}".format(kwargs['user']), "For you, {0}? Anything.".format(kwargs['user'])])
+
 class Commander(object):
     actions = {
         '!hoggy':hoggy,
@@ -469,8 +586,41 @@ class Commander(object):
         '!when': when,
         '!settime':settime,
         '!ud': urbandictionary,
-        '!ping':ping
+        '!ping':ping,
+        '!dice':roll,
+        '!choose':choose,
+        '!quote':fortune,
+        '!learn':learncom,
+        '!what':what
     }
+
+    @classmethod
+    def insult(self, user):
+        return choice([ "What? no",
+                        "Look don't be stupid now {0}".format(user),
+                        "Hey don't look now but there is one man too many in this room and I think it's {0}".format(user),
+                        "That won't work. Have you tried !eject ?",
+                        "I don't support the stupidity movement so I can't help you with that",
+                        "....what",
+                        "Stop {0}. What are you doing {0}. Stop.".format(user),
+                        "Wow not even Hoozin could screw up that badly. I'm impressed {0}".format(user),
+                        "Have you tried being smarter? ...You have? I'm so sorry for you",
+                        "This bot does not accept input of that much ... creativity",
+                        "Why don't you go home to your wife? Better yet, I'll go home to your wife, and outside of the improvement, she won't notice any difference",
+                        "I want to thank you for all the enjoyment you've taken out of being a bot",
+                        "Look even a five year old would understand how to use that command. Fetch a five year old.",
+                        "{0} may act like an idiot and type like an idiot but don't let that fool you. He really is an idiot".format(user),
+                        "[INCORRECT BOT COMMANDS ITENSIFIES]",
+                        "Hold on I changed how that command works. It's now !eject",
+                        "You know I could rent you out as a decy for duck hunters, {0}?".format(user),
+                        "Have you tried reading the help?"
+                        "Incorrect! Try again",
+                        "No no no you that's not how you do it",
+                        "If the last command was any indication of this channel this channel is going to blow",
+                        "This is like when I plateaued on the delts, man",
+                        "We're gonna need both horsepowers on this thing to figure that one out",
+                        "Let's pretend that never happened, okay?",
+                        "I hope {0}-senpai notices me ... and learns to stop fucking up the bot commands".format(user)])
 
     def __init__(self, client):
         self.client = client
@@ -482,7 +632,7 @@ class Commander(object):
                 # split up the command into action and args
                 command_array = message.split(' ')
                 command = command_array[0]
-                
+
                 # Check that there are args, if not args is empty list
                 if len(command_array) > 1:
                     try:
@@ -517,11 +667,11 @@ class Commander(object):
                 if sub.startswith('/'):
                     sub = sub[1:]
                 return "http://reddit.com/%s" % sub
-            
+
             if "http" in message:
                 parts = message.split()
                 for part in parts:
-                    if part.startswith('http:') or part.startswith('https:'):                        
+                    if part.startswith('http:') or part.startswith('https:'):
                         soup = BeautifulSoup.BeautifulSoup(urllib.urlopen(part))
                         try:
                             return "Title: {0}".format(soup.title.string.encode('ascii', 'ignore'))

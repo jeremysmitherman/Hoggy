@@ -9,7 +9,7 @@ except ConfigParser.NoSectionError:
     print "Config file is un-readable or not present.  Make sure you've created a config.ini (see config.ini.default for an example)"
     exit()
 
-    
+
 if config.get('db', 'type') == 'mysql':
     MSQLUname = config.get('db', 'mysqlusername')
     MSQLPW = config.get('db', 'mysqlpassword')
@@ -32,13 +32,24 @@ times = Table('times', metadata,
     Column('name', String(20), primary_key=True),
     Column('time', Float)
 )
-feeds = Table('feeds', metadata, 
+feeds = Table('feeds', metadata,
     Column('id', Integer, primary_key=True),
     Column('url', String(200))
 )
 seen_feeds = Table('seen_feeds', metadata,
     Column('story_url',String(200), primary_key=True)
 )
+
+#SCHEMA (id int, text object, text relation, text adder, timestamp added)
+# This is used by !learn and !what
+learn = Table('learn', metadata,
+    Column('id', Integer, primary_key =True),
+    Column('key', String(100)),
+    Column('relation', String(200)),
+    Column('added', String(32)),
+    Column('timestamp', DateTime)
+)
+
 
 def _create_tables(tables):
     for table in tables:
