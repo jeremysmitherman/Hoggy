@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer,String, Float
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer,String, Float, DateTime
 import os, sys
 import ConfigParser
 
