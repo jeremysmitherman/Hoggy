@@ -1,6 +1,6 @@
 from setup import quotes, times, engine, feeds
 from random import choice
-import re, sys, threading, socket
+import re, sys, threading, socket, os
 import random
 import requests
 import time
@@ -12,7 +12,10 @@ from time import gmtime
 import ConfigParser
 
 config = ConfigParser.RawConfigParser()
-config.read(sys.argv[1])
+try:
+    config.read(sys.argv[1])
+except:
+    config.read(os.path.dirname(os.path.abspath(__file__)) + "/config.ini")
 
 class ActionException(Exception):
     def __init__(self, message):

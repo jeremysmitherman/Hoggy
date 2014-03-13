@@ -5,9 +5,8 @@ import ConfigParser
 try:
     config = ConfigParser.RawConfigParser()
     config.read(sys.argv[1])
-except ConfigParser.NoSectionError:
-    print "Config file is un-readable or not present.  Make sure you've created a config.ini (see config.ini.default for an example)"
-    exit()
+except:
+    config.read(os.path.dirname(os.path.abspath(__file__)) + "/config.ini")
 
     
 if config.get('db', 'type') == 'mysql':
