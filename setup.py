@@ -61,5 +61,5 @@ def _create_tables(tables):
             pass
 
 if __name__ == '__main__':
-    _create_tables([quotes, times, feeds, seen_feeds])
+    _create_tables([quotes, times, feeds, seen_feeds, learn])
     print "Database setup completed successfully."

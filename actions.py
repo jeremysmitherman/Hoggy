@@ -221,7 +221,7 @@ class hoggy(command):
             else:
                 return "No quote with id: %s" %quoteId
         elif args[0] == 'search':
-            return "http://hoggit.us:8080/?search=%s" % " ".join(args[1:])
+            return "http://hoggit.us/search?query=%s" % " ".join(args[1:])
         elif args[0] == 'count':
             number = hog.count()
             return "There are currently {0} hoggyisms stored!".format(number)

@@ -62,6 +62,9 @@ class HoggyBot(irc.IRCClient):
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
         self.msg(channel, "I have arrived!")
+	if self.password:
+            print "Registering username %s with %s" % (self.nickname, self.password)
+            self.msg('NickServ', 'IDENTIFY %s' % self.password)
         self.reddit_update = redditupdate.RedditUpdateThread(self, channel)
         self.reddit_update.parse_threads(self.reddit_update.request_threads(),False)
         self.reddit_update.start()
