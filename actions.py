@@ -494,7 +494,7 @@ class choose(command):
         return "Hmm, let's go with {0}".format(choice(temp.split("or")).strip())
 
 class fortune(command):
-    shortdesc = "CRYPTIC METAPHOR*"
+    shortdesc = "CRYPTIC METAPHOR"
     longdesc = "You can try !fortune long for a longer fortune too!"
 
     @classmethod
@@ -522,7 +522,7 @@ class what(command):
         rs = le.fetchall();
 
         if len(rs) == 0 :
-            return "I don't know nothin"
+            return choice(["I don't know nothin", "Nope sorry, can't recall", "Err...nothing", "Still negative function on that one"]);
         output = key + " is: "
         count = 1
         for row in rs:
@@ -562,7 +562,7 @@ class learncom(command):
         if len(temp) != 2:
             return Commander.insult(kwargs['user'])
 
-        cls().add_learn(temp[0], temp[1], kwargs['user'])
+        cls().add_learn(temp[0].strip(), temp[1].strip(), kwargs['user'].strip())
         return choice(["Sure thing, pal", "Okay, why not?", "Yeah I don't mind", "I'll write that one down", "Roger, {0}".format(kwargs['user']), "For you, {0}? Anything.".format(kwargs['user'])])
 
 class Commander(object):
@@ -612,8 +612,15 @@ class Commander(object):
                         "{0} may act like an idiot and type like an idiot but don't let that fool you. He really is an idiot".format(user),
                         "[INCORRECT BOT COMMANDS ITENSIFIES]",
                         "Hold on I changed how that command works. It's now !eject",
-                        "You know I could rent you out as a decy for duck hunters, {0}?".format(user),
-                        "Have you tried reading the help?"
+                        "You know I could rent you out as a decoy for duck hunters, {0}?".format(user),
+                        "Stop that you'll anger the jers",
+                        "I never forget a command, but in your case i'll make an exception",
+                        "Calling you an idiot for that would be an insult to stupid people everywhere",
+                        "I don't know what your problem is {0}, but I bet it is hard to pronounce".format(user),
+                        "Don't you need a license to be that stupid?",
+                        "Dear Diary: Today, {0} was a faggot".format(user),
+                        "No way! No way! No way! No way!",
+                        "Have you tried reading the help?",
                         "Incorrect! Try again",
                         "No no no you that's not how you do it",
                         "If the last command was any indication of this channel this channel is going to blow",
