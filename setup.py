@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer,String, Float
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer,String, Float, DateTime
 import os, sys
 import ConfigParser
 
@@ -8,7 +8,7 @@ try:
 except:
     config.read(os.path.dirname(os.path.abspath(__file__)) + "/config.ini")
 
-    
+
 if config.get('db', 'type') == 'mysql':
     MSQLUname = config.get('db', 'mysqlusername')
     MSQLPW = config.get('db', 'mysqlpassword')
@@ -31,13 +31,24 @@ times = Table('times', metadata,
     Column('name', String(20), primary_key=True),
     Column('time', Float)
 )
-feeds = Table('feeds', metadata, 
+feeds = Table('feeds', metadata,
     Column('id', Integer, primary_key=True),
     Column('url', String(200))
 )
 seen_feeds = Table('seen_feeds', metadata,
     Column('story_url',String(200), primary_key=True)
 )
+
+#SCHEMA (id int, text object, text relation, text adder, timestamp added)
+# This is used by !learn and !what
+learn = Table('learn', metadata,
+    Column('id', Integer, primary_key =True),
+    Column('key', String(100)),
+    Column('relation', String(200)),
+    Column('added', String(32)),
+    Column('timestamp', DateTime)
+)
+
 
 def _create_tables(tables):
     for table in tables:
@@ -49,5 +60,5 @@ def _create_tables(tables):
             pass
 
 if __name__ == '__main__':
-    _create_tables([quotes, times, feeds, seen_feeds])
+    _create_tables([quotes, times, feeds, seen_feeds, learn])
     print "Database setup completed successfully."
